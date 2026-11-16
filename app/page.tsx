@@ -1,69 +1,112 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import type { Metadata } from "next";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "DailyTools | Premium Privacy-First Web Utilities",
+  description: "Explore a collection of fast, free, and beautifully designed web tools. 100% client-side processing means your data never leaves your browser.",
+  alternates: { canonical: "/" },
+};
+
+const allTools = [
+  { title: "Digital Stamp Generator", category: "Digital Planning", href: "/tools/stamp-generator" },
+  { title: "Board & Batten Calculator", category: "Home Improvement", href: "/tools/board-and-batten" },
+  { title: "Offline Image Redactor", category: "Privacy Tools", href: "#" },
+  { title: "Local-Only Password Generator", category: "Privacy Tools", href: "#" },
+  { title: "JWT Decoder", category: "Developer Tools", href: "#" },
+  { title: "French Drain Gravel Calculator", category: "Home Improvement", href: "#" },
+  { title: "Epoxy Floor Coating Calculator", category: "Home Improvement", href: "#" },
+  { title: "Stair Carpet Calculator", category: "Home Improvement", href: "#" },
+  { title: "Pattern-Aware Tile Calculator", category: "Home Improvement", href: "#" },
+  { title: "Photo-to-Coloring-Page Converter", category: "Creators", href: "#" },
+  { title: "LLM Token Cost Calculator", category: "Developer Tools", href: "#" },
+  { title: "Freelancer Scope Guard", category: "Business", href: "#" },
+  { title: "Board Feet Calculator", category: "Woodworking", href: "#" },
+  { title: "Exotic Pet Nutrition Calculator", category: "Pets", href: "#" },
+  { title: "Calligraphy Practice Sheet Generator", category: "Digital Planning", href: "#" },
+];
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="animate-fade-in">
+      {/* PREMIUM HERO SECTION */}
+      <section style={{ padding: "8rem 0 5rem 0", textAlign: "center", position: "relative" }}>
+        
+        {/* Trust Badge */}
+        <div style={{ 
+          display: "inline-block", 
+          padding: "6px 16px", 
+          background: "rgba(255, 255, 255, 0.8)", 
+          border: "1px solid var(--border-color)", 
+          borderRadius: "100px",
+          fontSize: "0.85rem",
+          fontWeight: "600",
+          color: "var(--text-muted)",
+          marginBottom: "1.5rem",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.02)"
+        }}>
+          ✨ 100% Client-Side & Privacy-First
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        <h1 style={{ maxWidth: "900px", margin: "0 auto 1.5rem auto" }}>
+          Premium Utilities for <br />
+          <span style={{ 
+            background: "linear-gradient(90deg, #FF5A1F, #FF8C5A)", 
+            WebkitBackgroundClip: "text", 
+            WebkitTextFillColor: "transparent" 
+          }}>
+            Modern Work.
+          </span>
+        </h1>
+        
+        <p style={{ fontSize: "1.25rem", maxWidth: "650px", margin: "0 auto 3rem auto", color: "var(--text-muted)" }}>
+          Fast, free, and beautifully designed web tools. No sign-up required. 
+          Your data never leaves your browser.
+        </p>
+      </section>
+
+      <div className="ad-slot">
+        <span style={{ color: "#9CA3AF", fontSize: "0.8rem" }}>Advertisement Space</span>
+      </div>
+
+      <section className="tools-grid" id="tools">
+        {allTools.map((tool, index) => (
+          <Link 
+            href={tool.href} 
+            key={index} 
+            className="tool-card" 
+            style={{ animationDelay: `${index * 0.05}s` }}
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+            <div className="tool-card-top">
+              <span className="tool-category">{tool.category}</span>
+              <span className="tool-arrow">↗</span>
+            </div>
+            <h2>{tool.title}</h2>
+          </Link>
+        ))}
+      </section>
+
+      {/* HOMEPAGE SEO CONTENT */}
+      <div className="article-content" style={{ marginTop: "6rem" }}>
+        <h2>Why Build DailyTools?</h2>
+        <p>
+          If you have ever searched for a simple calculator or image converter, you know the frustration. Most websites are cluttered with intrusive pop-up ads, force you to create an account, or worse—require you to upload your sensitive files to a server where you lose control of your data.
+        </p>
+        <p>
+          I built DailyTools to fix this. As a developer, I wanted a clean, fast, and ad-light environment where people could solve everyday problems in seconds. Every tool on this site is built with a "Privacy-First" architecture. 
+        </p>
+
+        <h2>How Our "Client-Side" Tools Work</h2>
+        <p>
+          Unlike traditional web applications, the tools on this site do not rely on a backend server to process your data. When you use our tools, the calculations and processing happen locally on your device.
+        </p>
+        <p>
+          This means your images, passwords, and text never travel across the internet. They are processed entirely within your web browser using modern HTML5 and JavaScript APIs. This not only makes the tools incredibly fast but also guarantees your absolute privacy.
+        </p>
+      </div>
+
+      <div className="ad-slot" style={{ marginTop: "2rem" }}>
+        <span style={{ color: "#9CA3AF", fontSize: "0.8rem" }}>Advertisement Space</span>
+      </div>
     </div>
   );
 }
