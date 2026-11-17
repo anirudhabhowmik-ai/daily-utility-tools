@@ -17,10 +17,6 @@ export default function BoardBattenPage() {
         </p>
       </header>
 
-      <div className="ad-slot">
-        <span style={{ color: "#94A3B8", fontSize: "0.8rem" }}>Advertisement Space</span>
-      </div>
-
       <BoardBatten />
 
       <div className="article-content">
@@ -43,10 +39,6 @@ export default function BoardBattenPage() {
         <p>
           Vertical linear feet is the sum of all batten-piece lengths after openings are subtracted. The 8-foot stock-board estimate packs pieces into stock boards, then adds 10% for waste. A piece longer than 8 feet is counted as multiple stock lengths and must be spliced. Horizontal rails, baseboards, trim, and their waste are not included; this is an estimate, not a complete cut list.
         </p>
-
-        <div className="ad-slot">
-          <span style={{ color: "#94A3B8", fontSize: "0.8rem" }}>Advertisement Space</span>
-        </div>
 
         <h2>Before You Cut</h2>
         <h3>Measure from finished edges</h3>
@@ -71,10 +63,6 @@ export default function BoardBattenPage() {
         <p>
           Use the actual clear gap shown for each segment. Measure that distance from the segment edge to the first batten, then place each following batten after the batten width plus the clear gap. Use a level and confirm all measurements on the wall before cutting.
         </p>
-      </div>
-
-      <div className="ad-slot">
-        <span style={{ color: "#94A3B8", fontSize: "0.8rem" }}>Advertisement Space</span>
       </div>
     </article>
   );

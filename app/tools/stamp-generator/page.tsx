@@ -17,11 +17,6 @@ export default function StampGeneratorPage() {
         </p>
       </header>
 
-      {/* AdSense Placeholder (Top) */}
-      <div className="ad-slot">
-        <span style={{ color: "#94A3B8", fontSize: "0.8rem" }}>Advertisement Space</span>
-      </div>
-
       {/* The Tool */}
       <StampGenerator />
 
@@ -58,11 +53,6 @@ export default function StampGeneratorPage() {
           select it, tap "Add Element," and save it to your personal Elements library. This way, 
           you don't have to import the file every single time!
         </p>
-
-        {/* AdSense Placeholder (Middle of Content) */}
-        <div className="ad-slot">
-          <span style={{ color: "#94A3B8", fontSize: "0.8rem" }}>Advertisement Space</span>
-        </div>
 
         <h2>Why Use Scalloped or Hexagon Shapes?</h2>
         <p>
@@ -114,11 +104,6 @@ export default function StampGeneratorPage() {
           the text will automatically scale down to fit inside the shape, but it may become 
           too small to read clearly.
         </p>
-      </div>
-
-      {/* AdSense Placeholder (Bottom) */}
-      <div className="ad-slot">
-        <span style={{ color: "#94A3B8", fontSize: "0.8rem" }}>Advertisement Space</span>
       </div>
     </article>
   );

@@ -10,19 +10,19 @@ export const metadata: Metadata = {
 const allTools = [
   { title: "Digital Stamp Generator", category: "Digital Planning", href: "/tools/stamp-generator" },
   { title: "Board & Batten Calculator", category: "Home Improvement", href: "/tools/board-and-batten" },
-  { title: "Offline Image Redactor", category: "Privacy Tools", href: "#" },
-  { title: "Local-Only Password Generator", category: "Privacy Tools", href: "#" },
-  { title: "JWT Decoder", category: "Developer Tools", href: "#" },
-  { title: "French Drain Gravel Calculator", category: "Home Improvement", href: "#" },
-  { title: "Epoxy Floor Coating Calculator", category: "Home Improvement", href: "#" },
-  { title: "Stair Carpet Calculator", category: "Home Improvement", href: "#" },
-  { title: "Pattern-Aware Tile Calculator", category: "Home Improvement", href: "#" },
-  { title: "Photo-to-Coloring-Page Converter", category: "Creators", href: "#" },
-  { title: "LLM Token Cost Calculator", category: "Developer Tools", href: "#" },
-  { title: "Freelancer Scope Guard", category: "Business", href: "#" },
-  { title: "Board Feet Calculator", category: "Woodworking", href: "#" },
-  { title: "Exotic Pet Nutrition Calculator", category: "Pets", href: "#" },
-  { title: "Calligraphy Practice Sheet Generator", category: "Digital Planning", href: "#" },
+  { title: "Offline Image Redactor", category: "Privacy Tools", href: "/tools/offline-image-redactor" },
+  { title: "Local-Only Password Generator", category: "Privacy Tools", href: "/tools/local-only-password-generator" },
+  { title: "JWT Decoder", category: "Developer Tools", href: "/tools/jwt-decoder" },
+  { title: "French Drain Gravel Calculator", category: "Home Improvement", href: "/tools/french-drain-gravel-calculator" },
+  { title: "Epoxy Floor Coating Calculator", category: "Home Improvement", href: "/tools/epoxy-floor-coating-calculator" },
+  { title: "Stair Carpet Calculator", category: "Home Improvement", href: "/tools/stair-carpet-calculator" },
+  { title: "Pattern-Aware Tile Calculator", category: "Home Improvement", href: "/tools/pattern-aware-tile-calculator" },
+  { title: "Photo-to-Coloring-Page Converter", category: "Creators", href: "/tools/photo-to-coloring-page-converter" },
+  { title: "LLM Token Cost Calculator", category: "Developer Tools", href: "/tools/llm-token-cost-calculator" },
+  { title: "Freelancer Scope Guard", category: "Business", href: "/tools/freelancer-scope-guard" },
+  { title: "Board Feet Calculator", category: "Woodworking", href: "/tools/board-feet-calculator" },
+  { title: "Exotic Pet Feeding Tracker", category: "Pets", href: "/tools/exotic-pet-nutrition-calculator" },
+  { title: "Calligraphy Practice Sheet Generator", category: "Digital Planning", href: "/tools/calligraphy-practice-sheet-generator" },
 ];
 
 export default function Home() {
@@ -64,10 +64,6 @@ export default function Home() {
         </p>
       </section>
 
-      <div className="ad-slot">
-        <span style={{ color: "#9CA3AF", fontSize: "0.8rem" }}>Advertisement Space</span>
-      </div>
-
       <section className="tools-grid" id="tools">
         {allTools.map((tool, index) => (
           <Link 
@@ -102,10 +98,6 @@ export default function Home() {
         <p>
           This means your images, passwords, and text never travel across the internet. They are processed entirely within your web browser using modern HTML5 and JavaScript APIs. This not only makes the tools incredibly fast but also guarantees your absolute privacy.
         </p>
-      </div>
-
-      <div className="ad-slot" style={{ marginTop: "2rem" }}>
-        <span style={{ color: "#9CA3AF", fontSize: "0.8rem" }}>Advertisement Space</span>
       </div>
     </div>
   );
