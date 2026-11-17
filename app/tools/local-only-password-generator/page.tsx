@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import ToolLandingPage from "../ToolLandingPage";
-import PasswordGenerator from "./PasswordGenerator";
+import LocalOnlyPasswordGenerator from "./LocalOnlyPasswordGenerator";
 
 export const metadata: Metadata = {
   title: "Local-Only Password Generator | DailyTools",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLandingPage
-      toolContent={<PasswordGenerator />}
+      toolContent={<LocalOnlyPasswordGenerator />}
       title="Local-Only Password Generator"
       summary="Create strong, unique passwords in your browser without sending your preferences or outputs to a remote service."
       highlights={[
