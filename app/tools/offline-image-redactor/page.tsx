@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ToolLandingPage from "../ToolLandingPage";
+import OfflineRedactorTool from "./OfflineRedactorTool";
 
 export const metadata: Metadata = {
   title: "Offline Image Redactor | DailyTools",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLandingPage
-      tool="offline-image-redactor"
+      toolContent={<OfflineRedactorTool />}
       title="Offline Image Redactor"
       summary="Blur or mask sensitive details in screenshots, photos, and documents without uploading them to a server."
       highlights={[

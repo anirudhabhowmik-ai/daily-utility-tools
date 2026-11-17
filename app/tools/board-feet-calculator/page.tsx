@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ToolLandingPage from "../ToolLandingPage";
+import BoardFeetCalculator from "./BoardFeetCalculator";
 
 export const metadata: Metadata = {
   title: "Board Feet Calculator | DailyTools",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLandingPage
-      tool="board-feet-calculator"
+      toolContent={<BoardFeetCalculator />}
       title="Board Feet Calculator"
       summary="Estimate the wood volume in board feet for framing, trim, cabinetry, and woodworking projects before you buy lumber."
       highlights={[

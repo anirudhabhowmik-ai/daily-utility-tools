@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ToolLandingPage from "../ToolLandingPage";
+import ColoringPageConverter from "./ColoringPageConverter";
 
 export const metadata: Metadata = {
   title: "Photo to Coloring Page Converter | DailyTools",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLandingPage
-      tool="photo-to-coloring-page-converter"
+      toolContent={<ColoringPageConverter />}
       title="Photo to Coloring Page Converter"
       summary="Turn a reference image into a simplified black-and-white illustration that can be printed for coloring and creative practice."
       highlights={[

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ToolLandingPage from "../ToolLandingPage";
+import StairCarpetCalculator from "./StairCarpetCalculator";
 
 export const metadata: Metadata = {
   title: "Stair Carpet Calculator | DailyTools",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLandingPage
-      tool="stair-carpet-calculator"
+      toolContent={<StairCarpetCalculator />}
       title="Stair Carpet Calculator"
       summary="Estimate the amount of carpet and padding required for a staircase using tread width, riser count, and carpet depth."
       highlights={[

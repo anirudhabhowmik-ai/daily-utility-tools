@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ToolLandingPage from "../ToolLandingPage";
+import CalligraphySheetGenerator from "./CalligraphySheetGenerator";
 
 export const metadata: Metadata = {
   title: "Calligraphy Practice Sheet Generator | DailyTools",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLandingPage
-      tool="calligraphy-practice-sheet-generator"
+      toolContent={<CalligraphySheetGenerator />}
       title="Calligraphy Practice Sheet Generator"
       summary="Create printable practice sheets with guides, letter spacing, and consistent layout for modern calligraphy and hand lettering practice."
       highlights={[

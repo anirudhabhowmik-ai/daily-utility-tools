@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ToolLandingPage from "../ToolLandingPage";
+import TokenCostCalculator from "./TokenCostCalculator";
 
 export const metadata: Metadata = {
   title: "LLM Token Cost Calculator | DailyTools",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLandingPage
-      tool="llm-token-cost-calculator"
+      toolContent={<TokenCostCalculator />}
       title="LLM Token Cost Calculator"
       summary="Estimate prompt size, output length, and approximate AI model costs before starting a long conversation or generation task."
       highlights={[

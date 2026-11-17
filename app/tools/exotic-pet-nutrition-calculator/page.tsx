@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ToolLandingPage from "../ToolLandingPage";
+import PetFeedingTracker from "./PetFeedingTracker";
 
 export const metadata: Metadata = {
   title: "Exotic Pet Feeding Tracker | DailyTools",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLandingPage
-      tool="exotic-pet-nutrition-calculator"
+      toolContent={<PetFeedingTracker />}
       title="Exotic Pet Feeding Tracker"
       summary="Track how much food your pet has eaten against a daily target provided by your veterinarian. This tool records your inputs; it does not calculate nutritional needs."
       highlights={[

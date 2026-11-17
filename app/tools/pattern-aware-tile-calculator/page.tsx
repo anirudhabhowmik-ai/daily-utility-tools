@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ToolLandingPage from "../ToolLandingPage";
+import TileCalculator from "./TileCalculator";
 
 export const metadata: Metadata = {
   title: "Pattern-Aware Tile Calculator | DailyTools",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLandingPage
-      tool="pattern-aware-tile-calculator"
+      toolContent={<TileCalculator />}
       title="Pattern-Aware Tile Calculator"
       summary="Estimate how many tiles you need for wall and floor projects that use offset or patterned layouts."
       highlights={[

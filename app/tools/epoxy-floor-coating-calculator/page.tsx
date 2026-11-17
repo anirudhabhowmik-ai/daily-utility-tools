@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ToolLandingPage from "../ToolLandingPage";
+import CoatingCalculator from "./CoatingCalculator";
 
 export const metadata: Metadata = {
   title: "Epoxy Floor Coating Calculator | DailyTools",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLandingPage
-      tool="epoxy-floor-coating-calculator"
+      toolContent={<CoatingCalculator />}
       title="Epoxy Floor Coating Calculator"
       summary="Estimate the amount of epoxy resin, hardener, and additives needed to coat a garage, basement, or workshop floor."
       highlights={[

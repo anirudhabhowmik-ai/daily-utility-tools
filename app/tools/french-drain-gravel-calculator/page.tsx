@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ToolLandingPage from "../ToolLandingPage";
+import GravelCalculator from "./GravelCalculator";
 
 export const metadata: Metadata = {
   title: "French Drain Gravel Calculator | DailyTools",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLandingPage
-      tool="french-drain-gravel-calculator"
+      toolContent={<GravelCalculator />}
       title="French Drain Gravel Calculator"
       summary="Estimate the gravel and trench dimensions needed for a French drain project before you buy materials or begin digging."
       highlights={[

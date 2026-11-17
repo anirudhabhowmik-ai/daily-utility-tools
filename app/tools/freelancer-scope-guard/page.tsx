@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ToolLandingPage from "../ToolLandingPage";
+import ScopeGuard from "./ScopeGuard";
 
 export const metadata: Metadata = {
   title: "Freelancer Scope Guard | DailyTools",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLandingPage
-      tool="freelancer-scope-guard"
+      toolContent={<ScopeGuard />}
       title="Freelancer Scope Guard"
       summary="Use a simple scope checklist to define work, document assumptions, and limit the risk of unpaid change requests on freelance projects."
       highlights={[

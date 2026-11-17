@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ToolLandingPage from "../ToolLandingPage";
+import JwtTool from "./JwtTool";
 
 export const metadata: Metadata = {
   title: "JWT Decoder | DailyTools",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLandingPage
-      tool="jwt-decoder"
+      toolContent={<JwtTool />}
       title="JWT Decoder"
       summary="Decode JSON Web Tokens in the browser to check common claims such as expiration, audience, and issuer without sending secrets to a remote server."
       highlights={[

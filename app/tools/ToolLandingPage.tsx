@@ -1,22 +1,7 @@
-import InteractiveTool from "./InteractiveTool";
-
-type ToolKind =
-  | "offline-image-redactor"
-  | "local-only-password-generator"
-  | "jwt-decoder"
-  | "french-drain-gravel-calculator"
-  | "epoxy-floor-coating-calculator"
-  | "stair-carpet-calculator"
-  | "pattern-aware-tile-calculator"
-  | "photo-to-coloring-page-converter"
-  | "llm-token-cost-calculator"
-  | "freelancer-scope-guard"
-  | "board-feet-calculator"
-  | "exotic-pet-nutrition-calculator"
-  | "calligraphy-practice-sheet-generator";
+import type { ReactNode } from "react";
 
 type ToolLandingPageProps = {
-  tool: ToolKind;
+  toolContent: ReactNode;
   title: string;
   summary: string;
   highlights: string[];
@@ -26,7 +11,7 @@ type ToolLandingPageProps = {
 };
 
 export default function ToolLandingPage({
-  tool,
+  toolContent,
   title,
   summary,
   highlights,
@@ -41,7 +26,7 @@ export default function ToolLandingPage({
         <p style={{ fontSize: "1.2rem", color: "var(--text-muted)" }}>{summary}</p>
       </header>
 
-      <InteractiveTool kind={tool} />
+      {toolContent}
 
       <div className="article-content">
         <h2>Why this tool is useful</h2>
