@@ -13,16 +13,41 @@ function downloadCanvas(canvas: HTMLCanvasElement | null, filename: string) {
   link.remove();
 }
 
-type ToolMode = "rectangle" | "ellipse" | "line" | "arrow" | "brush";
+type ToolMode =
+  | "rectangle"
+  | "roundedRectangle"
+  | "ellipse"
+  | "circle"
+  | "triangle"
+  | "diamond"
+  | "line"
+  | "arrow"
+  | "brush";
 type Point = { x: number; y: number };
 
 const drawingTools: { mode: ToolMode; label: string }[] = [
   { mode: "brush", label: "Brush" },
   { mode: "rectangle", label: "Rectangle" },
+  { mode: "roundedRectangle", label: "Rounded rectangle" },
   { mode: "ellipse", label: "Ellipse" },
+  { mode: "circle", label: "Circle" },
+  { mode: "triangle", label: "Triangle" },
+  { mode: "diamond", label: "Diamond" },
   { mode: "line", label: "Line" },
   { mode: "arrow", label: "Arrow" },
 ];
+
+const drawingInstructions: Record<ToolMode, string> = {
+  brush: "Click or drag to paint over sensitive areas.",
+  rectangle: "Click and drag to draw a solid rectangle mask.",
+  roundedRectangle: "Click and drag to draw a solid rounded rectangle mask.",
+  ellipse: "Click and drag to draw a solid ellipse mask.",
+  circle: "Click and drag to draw a solid circle mask.",
+  triangle: "Click and drag to draw a solid triangle mask.",
+  diamond: "Click and drag to draw a solid diamond mask.",
+  line: "Click and drag to draw a solid line mask.",
+  arrow: "Click and drag to draw a solid arrow mask.",
+};
 
 function drawShape(
   context: CanvasRenderingContext2D,
@@ -34,6 +59,14 @@ function drawShape(
 ) {
   const width = end.x - start.x;
   const height = end.y - start.y;
+  const left = Math.min(start.x, end.x);
+  const top = Math.min(start.y, end.y);
+  const boxWidth = Math.abs(width);
+  const boxHeight = Math.abs(height);
+  const right = left + boxWidth;
+  const bottom = top + boxHeight;
+  const centerX = (left + right) / 2;
+  const centerY = (top + bottom) / 2;
   context.fillStyle = color;
   context.strokeStyle = color;
   context.lineWidth = lineWidth;
@@ -41,26 +74,63 @@ function drawShape(
   context.lineJoin = "round";
 
   if (mode === "rectangle") {
-    context.fillRect(
-      Math.min(start.x, end.x),
-      Math.min(start.y, end.y),
-      Math.abs(width),
-      Math.abs(height),
-    );
+    context.fillRect(left, top, boxWidth, boxHeight);
     return;
   }
 
-  if (mode === "ellipse") {
+  if (mode === "roundedRectangle") {
+    const radius = Math.min(20, boxWidth / 2, boxHeight / 2);
+    context.beginPath();
+    context.moveTo(left + radius, top);
+    context.lineTo(right - radius, top);
+    context.quadraticCurveTo(right, top, right, top + radius);
+    context.lineTo(right, bottom - radius);
+    context.quadraticCurveTo(right, bottom, right - radius, bottom);
+    context.lineTo(left + radius, bottom);
+    context.quadraticCurveTo(left, bottom, left, bottom - radius);
+    context.lineTo(left, top + radius);
+    context.quadraticCurveTo(left, top, left + radius, top);
+    context.closePath();
+    context.fill();
+    return;
+  }
+
+  if (mode === "ellipse" || mode === "circle") {
+    const radiusX = mode === "circle"
+      ? Math.max(Math.min(boxWidth, boxHeight) / 2, 1)
+      : Math.max(boxWidth / 2, 1);
+    const radiusY = mode === "circle" ? radiusX : Math.max(boxHeight / 2, 1);
     context.beginPath();
     context.ellipse(
-      (start.x + end.x) / 2,
-      (start.y + end.y) / 2,
-      Math.max(Math.abs(width) / 2, 1),
-      Math.max(Math.abs(height) / 2, 1),
+      centerX,
+      centerY,
+      radiusX,
+      radiusY,
       0,
       0,
       Math.PI * 2,
     );
+    context.fill();
+    return;
+  }
+
+  if (mode === "triangle") {
+    context.beginPath();
+    context.moveTo(centerX, top);
+    context.lineTo(right, bottom);
+    context.lineTo(left, bottom);
+    context.closePath();
+    context.fill();
+    return;
+  }
+
+  if (mode === "diamond") {
+    context.beginPath();
+    context.moveTo(centerX, top);
+    context.lineTo(right, centerY);
+    context.lineTo(centerX, bottom);
+    context.lineTo(left, centerY);
+    context.closePath();
     context.fill();
     return;
   }
@@ -370,9 +440,7 @@ export default function OfflineRedactorTool() {
       />
       
       <p style={{ marginTop: "1rem", fontSize: "0.9rem", color: "var(--text-muted)" }}>
-        {toolMode === "brush"
-          ? "Click or drag to paint over sensitive areas."
-          : `Click and drag to draw a ${toolMode} mask. The shape anchors at your first click.`}
+        {drawingInstructions[toolMode]}
       </p>
 
       <div className="tool-action-row">
