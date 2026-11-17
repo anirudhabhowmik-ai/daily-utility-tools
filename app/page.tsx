@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ADDITIONAL_TOOLS } from "./tools/new-tools/config";
 
 export const metadata: Metadata = {
   title: "DailyTools | Premium Privacy-First Web Utilities",
@@ -23,6 +24,16 @@ const allTools = [
   { title: "Board Feet Calculator", category: "Woodworking", href: "/tools/board-feet-calculator" },
   { title: "Exotic Pet Feeding Tracker", category: "Pets", href: "/tools/exotic-pet-nutrition-calculator" },
   { title: "Calligraphy Practice Sheet Generator", category: "Digital Planning", href: "/tools/calligraphy-practice-sheet-generator" },
+  ...Object.entries(ADDITIONAL_TOOLS).map(([slug, tool]) => ({
+    title: tool.title,
+    category: slug.includes("plug") || slug.includes("bag") || slug.includes("jet-lag") || slug.includes("time-zone") ? "Travel & Time"
+      : slug.includes("visa") || slug.includes("upload") || slug.includes("passport") ? "Travel & Forms"
+        : slug.includes("price") || slug.includes("notice") || slug.includes("subscription") || slug.includes("expense") ? "Money & Planning"
+          : slug.includes("cross-stitch") || slug.includes("mosaic") || slug.includes("printable-planner") ? "Crafts & Planning"
+            : slug.includes("metadata") || slug.includes("redaction") ? "Privacy & Files"
+              : "Media & Print",
+    href: `/tools/${slug}`,
+  })),
 ];
 
 export default function Home() {
@@ -59,8 +70,7 @@ export default function Home() {
         </h1>
         
         <p style={{ fontSize: "1.25rem", maxWidth: "650px", margin: "0 auto 3rem auto", color: "var(--text-muted)" }}>
-          Fast, free, and beautifully designed web tools. No sign-up required. 
-          Your data never leaves your browser.
+          Fast, free, and beautifully designed web tools. No sign-up required. Most tools process your inputs on your device; check each tool&apos;s notes for local storage or sharing details.
         </p>
       </section>
 
@@ -88,15 +98,15 @@ export default function Home() {
           If you have ever searched for a simple calculator or image converter, you know the frustration. Most websites are cluttered with intrusive pop-up ads, force you to create an account, or worse—require you to upload your sensitive files to a server where you lose control of your data.
         </p>
         <p>
-          I built DailyTools to fix this. As a developer, I wanted a clean, fast, and ad-light environment where people could solve everyday problems in seconds. Every tool on this site is built with a "Privacy-First" architecture. 
+          I built DailyTools to fix this. As a developer, I wanted a clean, fast, and ad-light environment where people could solve everyday problems in seconds. Every tool on this site is built with a &quot;Privacy-First&quot; architecture.
         </p>
 
-        <h2>How Our "Client-Side" Tools Work</h2>
+        <h2>How Our &quot;Client-Side&quot; Tools Work</h2>
         <p>
           Unlike traditional web applications, the tools on this site do not rely on a backend server to process your data. When you use our tools, the calculations and processing happen locally on your device.
         </p>
         <p>
-          This means your images, passwords, and text never travel across the internet. They are processed entirely within your web browser using modern HTML5 and JavaScript APIs. This not only makes the tools incredibly fast but also guarantees your absolute privacy.
+          Most tools process your files, passwords, and text locally in your browser rather than sending them to a DailyTools processing server. A few tools save drafts in browser storage or create shareable links; each page explains those behaviors so you can choose what to save or share.
         </p>
       </div>
     </div>

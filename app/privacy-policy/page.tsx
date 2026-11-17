@@ -27,17 +27,17 @@ export default function PrivacyPolicyPage() {
 
         <h2>Files and text entered into tools</h2>
         <p>
-          If you upload an image, enter a password, or type information into a tool, that content is generally processed on your device. It is not stored in a database by DailyTools unless you explicitly save or download the result.
+          If you select a file or enter information into a tool, it is generally processed in your browser and is not sent to a DailyTools processing server. Some tools save a working copy in your browser&apos;s local storage, such as a subscription list or seating plan. The trip expense tool can encode trip details in a shareable link; anyone who receives that link can read the encoded information. Tool pages describe these behaviors before use.
         </p>
 
-        <h2>Cookies and analytics</h2>
+        <h2>Browser storage, cookies, and analytics</h2>
         <p>
-          This site may use basic browser storage for preferences or settings only when needed for the tool experience. Any third-party advertising providers, including Google AdSense, may use cookies or similar technologies to personalize or measure ads in accordance with their own privacy policies.
+          Some tools use browser local storage to keep drafts on the same device; this data is not synced to an account. Browser settings can be used to clear it. This site may also use cookies or similar technologies for analytics or advertising. Third-party advertising providers, including Google AdSense if enabled, may use cookies or similar technologies to personalize or measure ads under their own privacy policies.
         </p>
 
         <h2>Third-party services</h2>
         <p>
-          We may use external services for hosting, analytics, and advertising. These providers may collect usage information according to their own policies, and we recommend reviewing those policies if you have questions about ad personalization or analytics.
+          We may use external services for hosting, page resources such as web fonts, analytics, and advertising. Those providers may receive technical information such as a browser&apos;s network request and may collect usage information under their own policies. Review their privacy information if you have questions about ad personalization or analytics.
         </p>
 
         <h2>Changes to this policy</h2>

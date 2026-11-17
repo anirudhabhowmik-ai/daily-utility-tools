@@ -22,12 +22,12 @@ export default function AboutPage() {
           Many online tools are overloaded with pop-ups, unclear pricing, and unnecessary account requirements. We wanted a simpler approach: a clean site with practical utilities, fast performance, and respect for user privacy.
         </p>
         <p>
-          Every tool on DailyTools is designed to work directly in the browser. That means your files, notes, text, and calculations stay on your device unless you choose to download the result.
+          Most tools on DailyTools process data directly in the browser rather than sending it to a DailyTools processing server. Some save a draft in browser storage or create a shareable link; the individual tool page explains those choices.
         </p>
 
         <h2>Why privacy matters</h2>
         <p>
-          People often use utilities for work, planning, home projects, and personal tasks. That information can be sensitive, which is why we keep processing local whenever possible. No account is required, and no server-side copy is created unless you intentionally save a file.
+          People often use utilities for work, planning, home projects, and personal tasks. That information can be sensitive, which is why we keep processing local whenever practical and make storage or sharing behavior clear. No account is required.
         </p>
 
         <h2>Built for real-world use</h2>
@@ -37,7 +37,7 @@ export default function AboutPage() {
 
         <h2>Transparency</h2>
         <p>
-          Some pages may display third-party advertising as part of a Monetization strategy. Those ads are separate from the utility experience and do not change the core privacy-first approach of the site.
+          Some pages may display advertisements from third-party providers. Ad selection and any related cookies are handled under the provider&apos;s own privacy policy.
         </p>
       </div>
     </article>

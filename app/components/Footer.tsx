@@ -10,7 +10,7 @@ export default function Footer() {
           <Link href="/contact">Contact</Link>
         </div>
         <p>© {new Date().getFullYear()} DailyTools. All rights reserved.</p>
-        <p>Built for speed and privacy. Your data never leaves your browser.</p>
+        <p>Built for speed and privacy. Most tools process data on your device; check each tool&apos;s note for storage or sharing details.</p>
       </div>
     </footer>
   );
