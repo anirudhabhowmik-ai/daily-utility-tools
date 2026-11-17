@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
-import type { ChangeEvent, ReactNode, SetStateAction } from "react";
+import type { ReactNode, SetStateAction } from "react";
+import FileUploadField from "../FileUploadField";
 
 const fieldClass = "tool-field";
 const storageEventPrefix = "dailytools-local-storage:";
@@ -152,22 +153,16 @@ export function SelectField({
 export function FileField({
   label,
   accept,
+  helperText,
   onChange,
 }: {
   label: string;
   accept?: string;
+  helperText?: string;
   onChange: (file: File | null) => void;
 }) {
   return (
-    <label className={fieldClass}>
-      <span>{label}</span>
-      <input
-        className="tool-input"
-        type="file"
-        accept={accept}
-        onChange={(event: ChangeEvent<HTMLInputElement>) => onChange(event.currentTarget.files?.[0] ?? null)}
-      />
-    </label>
+    <FileUploadField label={label} accept={accept} helperText={helperText} onFileSelect={onChange} />
   );
 }
 

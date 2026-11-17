@@ -84,7 +84,7 @@ export default function AdditionalToolInteractive({ kind }: { kind: AdditionalTo
         <div>
           <p className="tool-workspace-kicker">{categoryByTool[kind].toUpperCase()} · DAILYTOOLS</p>
           <h2 className="tool-workspace-title">{toolNames[kind]}</h2>
-          <p className="tool-workspace-caption">Use the inputs and review each check before acting on the result.</p>
+          <p className="tool-workspace-caption">Configure your options, then review the result and its assumptions.</p>
         </div>
         <span className="tool-local-badge"><span aria-hidden="true">●</span> Runs in this browser</span>
       </header>

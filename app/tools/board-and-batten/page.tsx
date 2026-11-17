@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import BoardBatten from "./BoardBatten";
+import ToolBreadcrumb from "../ToolBreadcrumb";
 
 export const metadata: Metadata = {
   title: "Board and Batten Layout Calculator | DailyTools",
@@ -10,9 +11,11 @@ export const metadata: Metadata = {
 export default function BoardBattenPage() {
   return (
     <article className="animate-fade-in">
-      <header style={{ marginTop: "3rem", marginBottom: "2rem" }}>
+      <ToolBreadcrumb title="Board and Batten Layout Calculator" />
+      <header className="tool-page-header">
+        <p className="tool-page-category">Home improvement</p>
         <h1>Board and Batten Layout Calculator</h1>
-        <p style={{ fontSize: "1.2rem", color: "var(--text-muted)" }}>
+        <p>
           Plan vertical batten spacing around doors, windows, and other wall obstacles, then estimate the required vertical material.
         </p>
       </header>

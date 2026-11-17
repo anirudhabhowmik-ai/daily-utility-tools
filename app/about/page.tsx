@@ -9,9 +9,10 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <article className="animate-fade-in">
-      <header style={{ marginTop: "3rem", marginBottom: "2rem" }}>
+      <header className="tool-page-header">
+        <p className="tool-page-category">Our story</p>
         <h1>About DailyTools</h1>
-        <p style={{ fontSize: "1.2rem", color: "var(--text-muted)" }}>
+        <p>
           DailyTools is built for everyday problem-solving without the clutter, sign-ups, and data-sharing practices that slow down normal web experiences.
         </p>
       </header>

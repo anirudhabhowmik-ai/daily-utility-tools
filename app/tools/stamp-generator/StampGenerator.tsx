@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import FileUploadField from "../FileUploadField";
 
 type ShapeType =
   | "scallop"
@@ -434,6 +435,7 @@ export default function StampGenerator() {
 
   // Image Upload State
   const [imageObj, setImageObj] = useState<HTMLImageElement | null>(null);
+  const [imageInputKey, setImageInputKey] = useState(0);
 
   // Positions
   const [mainPos, setMainPos] = useState<Point>(DEFAULT_MAIN_POS);
@@ -452,7 +454,6 @@ export default function StampGenerator() {
   const [fontTick, setFontTick] = useState(0);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const renderStamp = useCallback(
     (canvas: HTMLCanvasElement, guide: DragTarget | null) => {
@@ -747,8 +748,7 @@ export default function StampGenerator() {
     setImgPos(DEFAULT_IMG_POS);
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleImageUpload = (file: File | null) => {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -762,7 +762,7 @@ export default function StampGenerator() {
   const removeImage = () => {
     setImageObj(null);
     setImgPos(DEFAULT_IMG_POS);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    setImageInputKey((current) => current + 1);
   };
 
   const applyPreset = (p: (typeof PRESETS)[number]) => {
@@ -1193,40 +1193,19 @@ export default function StampGenerator() {
 
           <div style={sectionStyle}>
             <span style={sectionTitleStyle}>Custom Graphic</span>
-            <div style={{ display: "flex", gap: "10px" }}>
-              <input
-                type="file"
-                accept="image/png, image/jpeg, image/webp"
-                onChange={handleImageUpload}
-                ref={fileInputRef}
-                style={{ display: "none" }}
-              />
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="btn"
-                style={{
-                  flex: 1,
-                  background: "#F3F4F6",
-                  color: "var(--text-main)",
-                  border: "1px solid var(--border-color)",
-                  boxShadow: "none",
-                }}
-              >
-                {imageObj ? "Change Image" : "Select Image"}
-              </button>
+            <FileUploadField
+              key={imageInputKey}
+              label="Add a custom graphic"
+              accept="image/png,image/jpeg,image/webp"
+              helperText="PNG, JPG, or WebP. The graphic is added to your stamp design."
+              onFileSelect={handleImageUpload}
+            />
+            <div>
               {imageObj && (
                 <button
                   type="button"
                   onClick={removeImage}
-                  className="btn"
-                  style={{
-                    background: "#FEE2E2",
-                    color: "#DC2626",
-                    border: "1px solid #FCA5A5",
-                    boxShadow: "none",
-                    padding: "0 16px",
-                  }}
+                  className="tool-secondary-button"
                 >
                   Remove
                 </button>

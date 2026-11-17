@@ -1,7 +1,7 @@
-import Link from "next/link";
 import type { AdditionalToolKind } from "./config";
 import { ADDITIONAL_TOOLS } from "./config";
 import AdditionalToolInteractive from "./AdditionalToolInteractive";
+import ToolBreadcrumb from "../ToolBreadcrumb";
 
 const categoryDetails: Record<AdditionalToolKind, { category: string; steps: string[]; faqs: Array<{ question: string; answer: string }> }> = {
   "plug-voltage-checker": { category: "Travel", steps: ["Choose your home country and destination.", "Select the plug type on the device and enter its printed input rating.", "Review the plug, voltage, and frequency notes, then verify details on the equipment and local guidance."], faqs: [{ question: "Will a plug adapter convert voltage?", answer: "No. A plug adapter only changes the physical connection. It does not convert voltage or frequency." }] },
@@ -31,7 +31,7 @@ export default function NewToolPage({ kind }: { kind: AdditionalToolKind }) {
   const details = categoryDetails[kind];
   return (
     <article className="animate-fade-in">
-      <nav className="tool-breadcrumb" aria-label="Breadcrumb"><Link href="/">Home</Link><span aria-hidden="true">/</span><Link href="/#tools">All tools</Link><span aria-hidden="true">/</span><span>{tool.title}</span></nav>
+      <ToolBreadcrumb title={tool.title} />
       <header className="new-tool-page-header">
         <p className="tool-page-category">{details.category}</p>
         <h1>{tool.title}</h1>
@@ -47,7 +47,14 @@ export default function NewToolPage({ kind }: { kind: AdditionalToolKind }) {
         <h2>Important limitations</h2>
         <p>{tool.limitation}</p>
         <h2>Frequently asked questions</h2>
-        {details.faqs.map((faq) => <div key={faq.question}><h3>{faq.question}</h3><p>{faq.answer}</p></div>)}
+        <div className="tool-faq-list">
+          {details.faqs.map((faq) => (
+            <div className="tool-faq-item" key={faq.question}>
+              <h3>{faq.question}</h3>
+              <p>{faq.answer}</p>
+            </div>
+          ))}
+        </div>
         <div className="tool-local-note"><strong>Privacy note</strong><p>File processing and calculations run in your browser. Some tools save a working copy in browser storage or place data in a shareable link; the page explains those cases before you use them.</p></div>
       </div>
     </article>

@@ -9,9 +9,10 @@ export const metadata: Metadata = {
 export default function PrivacyPolicyPage() {
   return (
     <article className="animate-fade-in">
-      <header style={{ marginTop: "3rem", marginBottom: "2rem" }}>
+      <header className="tool-page-header">
+        <p className="tool-page-category">Your information</p>
         <h1>Privacy Policy</h1>
-        <p style={{ fontSize: "1.2rem", color: "var(--text-muted)" }}>
+        <p>
           DailyTools is designed around a simple principle: keep data local when possible and avoid collecting unnecessary personal information.
         </p>
       </header>

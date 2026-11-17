@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState, type ChangeEvent } from "react";
+import { useRef, useState } from "react";
 import ToolShell, { NumberField } from "../ToolShell";
+import FileUploadField from "../FileUploadField";
 
 function downloadCanvas(canvas: HTMLCanvasElement | null, filename: string) {
   if (!canvas) return;
@@ -35,8 +36,7 @@ export default function ColoringPageConverter() {
     }
   };
 
-  const uploadImage = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const uploadImage = (file: File | null) => {
     if (!file) return;
     setReady(false);
     if (!file.type.startsWith("image/")) {
@@ -100,9 +100,15 @@ export default function ColoringPageConverter() {
 
   return (
     <ToolShell title="Coloring page studio" onReset={reset}>
-      <label className="tool-field">Choose image<input key={inputKey} className="tool-input" type="file" accept="image/*" onChange={uploadImage} /></label>
+      <FileUploadField
+        key={inputKey}
+        label="Choose image"
+        accept="image/*"
+        helperText="PNG, JPG, or WebP. Your photo is processed in this browser."
+        onFileSelect={uploadImage}
+      />
       <NumberField label="Outline sensitivity (lower creates more lines)" value={threshold} min={1} onChange={setThreshold} />
-      <label className="tool-check"><input type="checkbox" checked={invert} onChange={(event) => setInvert(event.target.checked)} /> Invert outline colors</label>
+      <label className="tool-check"><span>Invert outline colors</span><input type="checkbox" role="switch" checked={invert} onChange={(event) => setInvert(event.target.checked)} /></label>
       <button type="button" className="btn" onClick={convertPhoto} disabled={!ready}>Create coloring page</button>
       {imageName && <p>{imageName}</p>}
       {!ready && <p className="tool-empty-state">Choose an image to preview your coloring page.</p>}

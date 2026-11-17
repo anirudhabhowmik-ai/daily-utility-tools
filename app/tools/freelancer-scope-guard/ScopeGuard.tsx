@@ -42,12 +42,22 @@ export default function ScopeGuard() {
 
   return (
     <ToolShell title="Project scope checklist" onReset={reset}>
-      <ToolLabel>Deliverable or change request<input className="tool-input" value={taskInput} onChange={(event) => setTaskInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") addTask(); }} placeholder="e.g. Homepage wireframe, two revision rounds" /></ToolLabel>
-      <button type="button" className="btn" onClick={addTask}>Add to scope checklist</button>
-      {tasks.length > 0 ? <div style={{ marginTop: "1rem" }}>
-        <p>{tasks.filter((task) => task.done).length} of {tasks.length} items confirmed</p>
-        <button type="button" className="tool-secondary-button" onClick={exportScope}>Export checklist</button>
-        <ul>{tasks.map((task) => <li key={task.id} style={{ marginBottom: "0.75rem" }}><label><input type="checkbox" checked={task.done} onChange={() => setTasks((current) => current.map((item) => item.id === task.id ? { ...item, done: !item.done } : item))} /> <span style={{ textDecoration: task.done ? "line-through" : "none" }}>{task.text}</span></label> <button type="button" onClick={() => setTasks((current) => current.filter((item) => item.id !== task.id))}>Remove</button></li>)}</ul>
+      <div className="scope-add-row">
+        <ToolLabel>Deliverable or change request<input className="tool-input" value={taskInput} onChange={(event) => setTaskInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") addTask(); }} placeholder="e.g. Homepage wireframe, two revision rounds" /></ToolLabel>
+        <button type="button" className="btn" onClick={addTask}>Add to scope checklist</button>
+      </div>
+      {tasks.length > 0 ? <div className="scope-checklist">
+        <div className="scope-checklist-summary">
+          <p>{tasks.filter((task) => task.done).length} of {tasks.length} items confirmed</p>
+          <button type="button" className="tool-secondary-button" onClick={exportScope}>Export checklist</button>
+        </div>
+        <ul className="scope-task-list">{tasks.map((task) => <li className="scope-task-item" key={task.id}>
+          <label className="scope-task-label">
+            <input className="scope-task-checkbox" type="checkbox" checked={task.done} onChange={() => setTasks((current) => current.map((item) => item.id === task.id ? { ...item, done: !item.done } : item))} />
+            <span style={{ textDecoration: task.done ? "line-through" : "none" }}>{task.text}</span>
+          </label>
+          <button className="tool-text-button" type="button" onClick={() => setTasks((current) => current.filter((item) => item.id !== task.id))}>Remove</button>
+        </li>)}</ul>
       </div> : <p>Add deliverables, exclusions, or requested changes to make the scope visible.</p>}
       <p>Your checklist stays in this page session and is not saved to an account.</p>
     </ToolShell>

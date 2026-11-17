@@ -39,46 +39,53 @@ const allTools = [
 export default function Home() {
   return (
     <div className="animate-fade-in">
-      {/* PREMIUM HERO SECTION */}
-      <section style={{ padding: "8rem 0 5rem 0", textAlign: "center", position: "relative" }}>
-        
-        {/* Trust Badge */}
-        <div style={{ 
-          display: "inline-block", 
-          padding: "6px 16px", 
-          background: "rgba(255, 255, 255, 0.8)", 
-          border: "1px solid var(--border-color)", 
-          borderRadius: "100px",
-          fontSize: "0.85rem",
-          fontWeight: "600",
-          color: "var(--text-muted)",
-          marginBottom: "1.5rem",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.02)"
-        }}>
-          ✨ 100% Client-Side & Privacy-First
+      <section className="home-hero">
+        <div className="home-hero-copy">
+          <span className="home-hero-badge"><span aria-hidden="true" /> Thoughtful tools. Private by design.</span>
+          <h1>Small tools.<br /><span>Less friction.</span></h1>
+          <p>
+            A considered collection of useful utilities for work and everyday life. No account required, and most tools process your data right in your browser.
+          </p>
+          <div className="home-hero-actions">
+            <Link href="#tools" className="btn">Explore all tools <span aria-hidden="true">↓</span></Link>
+            <Link href="/about" className="home-secondary-link">How DailyTools works <span aria-hidden="true">↗</span></Link>
+          </div>
+          <ul className="home-trust-points" aria-label="DailyTools benefits">
+            <li><span aria-hidden="true">✓</span> No sign-up</li>
+            <li><span aria-hidden="true">✓</span> Privacy-minded</li>
+            <li><span aria-hidden="true">✓</span> Free to use</li>
+          </ul>
         </div>
-
-        <h1 style={{ maxWidth: "900px", margin: "0 auto 1.5rem auto" }}>
-          Premium Utilities for <br />
-          <span style={{ 
-            background: "linear-gradient(90deg, #FF5A1F, #FF8C5A)", 
-            WebkitBackgroundClip: "text", 
-            WebkitTextFillColor: "transparent" 
-          }}>
-            Modern Work.
-          </span>
-        </h1>
-        
-        <p style={{ fontSize: "1.25rem", maxWidth: "650px", margin: "0 auto 3rem auto", color: "var(--text-muted)" }}>
-          Fast, free, and beautifully designed web tools. No sign-up required. Most tools process your inputs on your device; check each tool&apos;s notes for local storage or sharing details.
-        </p>
+        <div className="home-hero-visual" aria-hidden="true">
+          <div className="home-hero-glow" />
+          <div className="home-showcase-card">
+            <div className="home-showcase-top"><span>DAILY TOOLKIT</span><span className="home-live-dot" /> READY WHEN YOU ARE</div>
+            <div className="home-showcase-heading">Make room for<br />the work that matters.</div>
+            <div className="home-showcase-grid">
+              <span><i>01</i> Calculate</span>
+              <span><i>02</i> Create</span>
+              <span><i>03</i> Organize</span>
+              <span><i>04</i> Protect</span>
+            </div>
+            <div className="home-showcase-footer"><span>Useful by nature</span><span>↗</span></div>
+          </div>
+          <div className="home-privacy-float"><span aria-hidden="true">✦</span><span><strong>Made for your browser</strong><small>Your work stays yours</small></span></div>
+        </div>
       </section>
+
+      <div className="tools-section-heading">
+        <div>
+          <p className="section-eyebrow">THE TOOLBOX</p>
+          <h2>Find your next useful thing</h2>
+        </div>
+        <p>Simple, focused tools for the little jobs that add up.</p>
+      </div>
 
       <section className="tools-grid" id="tools">
         {allTools.map((tool, index) => (
           <Link 
             href={tool.href} 
-            key={index} 
+            key={tool.href} 
             className="tool-card" 
             style={{ animationDelay: `${index * 0.05}s` }}
           >
@@ -91,8 +98,7 @@ export default function Home() {
         ))}
       </section>
 
-      {/* HOMEPAGE SEO CONTENT */}
-      <div className="article-content" style={{ marginTop: "6rem" }}>
+      <div className="article-content home-about">
         <h2>Why Build DailyTools?</h2>
         <p>
           If you have ever searched for a simple calculator or image converter, you know the frustration. Most websites are cluttered with intrusive pop-up ads, force you to create an account, or worse—require you to upload your sensitive files to a server where you lose control of your data.

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import ToolBreadcrumb from "./ToolBreadcrumb";
 
 type ToolLandingPageProps = {
   toolContent: ReactNode;
@@ -21,9 +22,11 @@ export default function ToolLandingPage({
 }: ToolLandingPageProps) {
   return (
     <article className="animate-fade-in">
-      <header style={{ marginTop: "3rem", marginBottom: "2rem" }}>
+      <ToolBreadcrumb title={title} />
+      <header className="tool-page-header">
+        <p className="tool-page-category">Browser-based utility</p>
         <h1>{title}</h1>
-        <p style={{ fontSize: "1.2rem", color: "var(--text-muted)" }}>{summary}</p>
+        <p>{summary}</p>
       </header>
 
       {toolContent}
@@ -52,12 +55,14 @@ export default function ToolLandingPage({
         ) : null}
 
         <h2>Frequently asked questions</h2>
-        {faqs.map((faq) => (
-          <div key={faq.question}>
-            <h3>{faq.question}</h3>
-            <p>{faq.answer}</p>
-          </div>
-        ))}
+        <div className="tool-faq-list">
+          {faqs.map((faq) => (
+            <div className="tool-faq-item" key={faq.question}>
+              <h3>{faq.question}</h3>
+              <p>{faq.answer}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </article>
   );

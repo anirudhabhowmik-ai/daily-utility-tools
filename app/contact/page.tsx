@@ -9,9 +9,10 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <article className="animate-fade-in">
-      <header style={{ marginTop: "3rem", marginBottom: "2rem" }}>
+      <header className="tool-page-header">
+        <p className="tool-page-category">Get in touch</p>
         <h1>Contact DailyTools</h1>
-        <p style={{ fontSize: "1.2rem", color: "var(--text-muted)" }}>
+        <p>
           We welcome feedback, suggestions, and questions about the tools and content on DailyTools.
         </p>
       </header>

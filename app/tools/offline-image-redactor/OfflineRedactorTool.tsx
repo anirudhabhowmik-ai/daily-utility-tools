@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState, type ChangeEvent, type PointerEvent } from "react";
+import { useRef, useState, type PointerEvent } from "react";
 import ToolShell, { NumberField } from "../ToolShell";
+import FileUploadField from "../FileUploadField";
 
 function downloadCanvas(canvas: HTMLCanvasElement | null, filename: string) {
   if (!canvas) return;
@@ -211,10 +212,10 @@ export default function OfflineRedactorTool() {
     }
   };
 
-  const uploadImage = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const uploadImage = (file: File | null) => {
     if (!file) return;
     setReady(false);
+    setImageName("");
     drawing.current = false;
     activePointerId.current = null;
     snapshot.current = null;
@@ -365,93 +366,80 @@ export default function OfflineRedactorTool() {
 
   return (
     <ToolShell title="Image redaction studio" onReset={reset}>
-      
-      <label className="tool-field">
-        Choose image
-        <input key={inputKey} className="tool-input" type="file" accept="image/*" onChange={uploadImage} />
-      </label>
-      
-      <div className="tool-field">
-        <span>Drawing tool</span>
-        <div className="tool-inline-options" role="group" aria-label="Drawing tool">
-          {drawingTools.map(({ mode, label }) => (
-            <button
-              key={mode}
-              type="button"
-              className="tool-secondary-button"
-              aria-pressed={toolMode === mode}
-              onClick={() => setToolMode(mode)}
-              style={toolMode === mode ? {
-                background: "var(--text-main)",
-                borderColor: "var(--text-main)",
-                color: "#FFFFFF",
-              } : undefined}
-            >
-              {label}
-            </button>
-          ))}
+      <FileUploadField
+        key={inputKey}
+        label="Choose image to redact"
+        accept="image/*"
+        helperText="PNG, JPG, WebP, or another browser-supported image. Processing stays on this device."
+        onFileSelect={uploadImage}
+      />
+      {imageName && !ready && <p className="tool-file-feedback" role="status">{imageName}</p>}
+
+      <section className="redactor-settings" aria-label="Redaction settings">
+        <div className="tool-field">
+          <span>Drawing tool</span>
+          <div className="redactor-tool-options" role="group" aria-label="Drawing tool">
+            {drawingTools.map(({ mode, label }) => (
+              <button
+                key={mode}
+                type="button"
+                className="redactor-tool-button"
+                aria-pressed={toolMode === mode}
+                onClick={() => setToolMode(mode)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <label className="tool-field">
-        <span>Mask color</span>
-        <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <input 
-            type="color" 
-            value={maskColor} 
-            onChange={(e) => setMaskColor(e.target.value)} 
-            aria-label="Mask color"
-            style={{ width: "40px", height: "40px", padding: "0", border: "none", cursor: "pointer", borderRadius: "6px" }}
+        <label className="tool-field redactor-color-field">
+          <span>Mask color</span>
+          <span className="redactor-color-control">
+            <input
+              type="color"
+              value={maskColor}
+              onChange={(e) => setMaskColor(e.target.value)}
+              aria-label="Mask color"
+            />
+            <span>{maskColor.toUpperCase()}</span>
+          </span>
+        </label>
+
+        {(toolMode === "brush" || toolMode === "line" || toolMode === "arrow") && (
+          <NumberField
+            label={toolMode === "brush" ? "Brush size (image pixels)" : "Line width (image pixels)"}
+            value={brushSize}
+            min={4}
+            max={300}
+            onChange={setBrushSize}
           />
-          <span style={{ fontSize: "0.9rem", fontWeight: 600 }}>{maskColor.toUpperCase()}</span>
-        </span>
-      </label>
+        )}
+      </section>
 
-      {(toolMode === "brush" || toolMode === "line" || toolMode === "arrow") && (
-        <NumberField
-          label={toolMode === "brush" ? "Brush size (image pixels)" : "Line width (image pixels)"}
-          value={brushSize}
-          min={4}
-          max={300}
-          onChange={setBrushSize}
-        />
-      )}
-
-      {imageName && <p style={{ marginTop: "1rem", fontSize: "0.9rem", color: "var(--text-muted)" }}>{imageName}</p>}
       {!ready && <p className="tool-empty-state">Choose an image to start masking sensitive areas.</p>}
 
-      {/* Canvas */}
-      <canvas 
-        ref={canvasRef} 
-        onPointerDown={handlePointerDown} 
-        onPointerMove={handlePointerMove} 
-        onPointerUp={handlePointerUp} 
-        onPointerCancel={handlePointerCancel} 
-        className="tool-canvas-preview" 
-        style={{ 
-          display: ready ? "block" : "none", 
-          touchAction: "none", 
-          cursor: toolMode === "brush" ? "cell" : "crosshair",
-          maxWidth: "100%",
-          marginTop: "1rem",
-          border: "1px solid var(--border-color)",
-          borderRadius: "8px"
-        }} 
+      <canvas
+        ref={canvasRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
+        className="tool-canvas-preview redactor-canvas"
+        style={{ display: ready ? "block" : "none", cursor: toolMode === "brush" ? "cell" : "crosshair" }}
       />
-      
-      <p style={{ marginTop: "1rem", fontSize: "0.9rem", color: "var(--text-muted)" }}>
+
+      <p className="redactor-instructions">
         {drawingInstructions[toolMode]}
       </p>
 
-      <div className="tool-action-row">
+      <div className="tool-action-row redactor-actions">
         <button type="button" className="tool-secondary-button" onClick={undo} disabled={historyCount === 0}>Undo</button>
         <button type="button" className="tool-secondary-button" onClick={clear} disabled={!ready || historyCount === 0}>Clear masks</button>
+        <button type="button" className="btn redactor-download" onClick={() => downloadCanvas(canvasRef.current, "redacted-image.png")} disabled={!ready}>
+          Download redacted PNG
+        </button>
       </div>
-      
-      <button type="button" className="btn" onClick={() => downloadCanvas(canvasRef.current, "redacted-image.png")} disabled={!ready}>
-        Download redacted PNG
-      </button>
-
     </ToolShell>
   );
 }

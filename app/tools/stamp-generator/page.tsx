@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import StampGenerator from "./StampGenerator";
+import ToolBreadcrumb from "../ToolBreadcrumb";
 
 export const metadata: Metadata = {
   title: "Free Digital Stamp Generator (GoodNotes & Notability) | DailyTools",
@@ -9,9 +10,11 @@ export const metadata: Metadata = {
 export default function StampGeneratorPage() {
   return (
     <article className="animate-fade-in">
-      <header style={{ marginTop: "3rem", marginBottom: "2rem" }}>
+      <ToolBreadcrumb title="Digital Stamp Generator" />
+      <header className="tool-page-header">
+        <p className="tool-page-category">Digital planning</p>
         <h1>Free Custom Digital Stamp Generator</h1>
-        <p style={{ fontSize: "1.2rem", color: "var(--text-muted)" }}>
+        <p>
           Create transparent PNG stamps for GoodNotes, Notability, and digital planning. 
           No sign-up required. Your data never leaves your browser.
         </p>

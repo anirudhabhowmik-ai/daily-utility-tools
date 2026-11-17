@@ -132,7 +132,7 @@ function NoticeDateCalculator() {
         <TextField label="Notice start date" type="date" value={startDate} onChange={setStartDate} />
         <NumberField label={mode === "calendar" ? "Notice length (calendar days)" : "Notice length (business days)"} value={days} onChange={setDays} min={1} max={10000} step={1} />
         <SelectField label="Count days as" value={mode} onChange={setMode} options={[{ value: "calendar", label: "Calendar days" }, { value: "business", label: "Business days (Mon–Fri)" }]} />
-        <label className="tool-checkbox-field"><input type="checkbox" checked={includeStart} onChange={(event) => setIncludeStart(event.currentTarget.checked)} /><span>Count start date as day 1 when it qualifies</span></label>
+        <label className="tool-checkbox-field"><span>Count start date as day 1 when it qualifies</span><input type="checkbox" role="switch" checked={includeStart} onChange={(event) => setIncludeStart(event.currentTarget.checked)} /></label>
       </FieldGrid>
       {mode === "business" && <>
         <SelectField label="Starter holiday calendar (optional)" value={holidayProfile} onChange={setHolidayProfile} options={[

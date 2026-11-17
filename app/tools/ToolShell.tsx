@@ -3,20 +3,6 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 
-const fieldStyle = {
-  display: "grid",
-  gap: "0.4rem",
-  marginBottom: 0,
-} as const;
-
-const resultStyle = {
-  background: "#FFF7F2",
-  border: "1px solid #FED7C3",
-  borderRadius: "12px",
-  padding: "1rem",
-  marginTop: "1rem",
-} as const;
-
 export function NumberField({
   label,
   value,
@@ -33,7 +19,7 @@ export function NumberField({
   step?: number | "any";
 }) {
   return (
-    <label className="tool-field" style={fieldStyle}>
+    <label className="tool-field">
       <span>{label}</span>
       <input
         className="tool-input"
@@ -54,11 +40,11 @@ export function NumberField({
 }
 
 export function Result({ children }: { children: ReactNode }) {
-  return <div className="tool-result" style={resultStyle} aria-live="polite">{children}</div>;
+  return <div className="tool-result" aria-live="polite">{children}</div>;
 }
 
 export function ToolLabel({ children }: { children: ReactNode }) {
-  return <label className="tool-field" style={fieldStyle}>{children}</label>;
+  return <label className="tool-field">{children}</label>;
 }
 
 export default function ToolShell({
@@ -93,7 +79,7 @@ export default function ToolShell({
         <div>
           <p className="tool-workspace-kicker">DAILYTOOLS · BROWSER WORKSPACE</p>
           <h2 className="tool-workspace-title">{title}</h2>
-          <p className="tool-workspace-caption">Use the controls below to get a live result. Your entries stay in this page unless you choose to export them.</p>
+          <p className="tool-workspace-caption">Adjust the inputs, review your result, and export when you are ready.</p>
         </div>
         <div className="tool-workspace-actions">
           <span className="tool-local-badge"><span aria-hidden="true">●</span> Runs locally</span>

@@ -91,16 +91,63 @@ export default function LocalOnlyPasswordGenerator() {
 
   return (
     <ToolShell title="Password builder" onReset={reset}>
-      <NumberField label="Password length (8–128)" value={length} min={8} onChange={(value) => setLength(Math.min(128, Math.max(8, Math.floor(value))))} />
-      <div className="tool-inline-options" aria-label="Common password lengths">
-        {[12, 16, 24, 32].map((preset) => <button key={preset} type="button" className="tool-secondary-button" onClick={() => setLength(preset)}>{preset} characters</button>)}
+      <div className="password-length-settings">
+        <NumberField
+          label="Password length (8–128)"
+          value={length}
+          min={8}
+          onChange={(value) => setLength(Math.min(128, Math.max(8, Math.floor(value))))}
+        />
+        <div className="tool-field password-preset-control">
+          <span>Quick length</span>
+          <div className="password-preset-options" role="group" aria-label="Common password lengths">
+            {[12, 16, 24, 32].map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                className="tool-secondary-button"
+                aria-pressed={length === preset}
+                aria-label={`${preset} characters`}
+                onClick={() => setLength(preset)}
+              >
+                {preset}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
-      <div className="tool-inline-options">
-        {passwordOptions.map(({ checked, onChange, label }) => (
-          <label key={label}><input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} /> {label}</label>
-        ))}
-        <label><input type="checkbox" checked={excludeAmbiguous} onChange={(event) => setExcludeAmbiguous(event.target.checked)} /> Exclude look-alike characters</label>
-      </div>
+      <fieldset className="password-options-panel">
+        <legend>Character options</legend>
+        <div className="password-options-grid">
+          {passwordOptions.map(({ checked, onChange, label }) => (
+            <label className="password-toggle" key={label}>
+              <span>{label}</span>
+              <input
+                className="password-toggle-input"
+                type="checkbox"
+                role="switch"
+                checked={checked}
+                onChange={(event) => onChange(event.currentTarget.checked)}
+              />
+              <span className="password-switch-track" aria-hidden="true"><span /></span>
+            </label>
+          ))}
+        </div>
+        <label className="password-toggle password-exclusion-toggle">
+          <span>
+            Exclude look-alike characters
+            <small>Removes O, 0, I, l, and 1</small>
+          </span>
+          <input
+            className="password-toggle-input"
+            type="checkbox"
+            role="switch"
+            checked={excludeAmbiguous}
+            onChange={(event) => setExcludeAmbiguous(event.currentTarget.checked)}
+          />
+          <span className="password-switch-track" aria-hidden="true"><span /></span>
+        </label>
+      </fieldset>
       <button type="button" className="btn" onClick={generatePassword}>Generate password</button>
       {password && <Result><code style={{ overflowWrap: "anywhere" }}>{password}</code><p><button type="button" className="btn" onClick={copyPassword}>{copied ? "Copied" : "Copy"}</button></p>{copyError && <p role="alert">{copyError}</p>}</Result>}
       <div className="tool-strength" role="meter" aria-label="Estimated password strength" aria-valuemin={0} aria-valuemax={128} aria-valuenow={Math.min(128, Math.round(estimatedEntropy))}>

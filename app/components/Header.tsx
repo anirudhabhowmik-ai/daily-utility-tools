@@ -37,6 +37,7 @@ export default function Header() {
           className="mobile-menu-btn" 
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle menu"
+          aria-expanded={isOpen}
         >
           <svg 
             width="24" 
@@ -58,11 +59,11 @@ export default function Header() {
 
       {/* Mobile Dropdown Menu */}
       {isOpen && (
-        <div className="mobile-menu animate-fade-in">
+        <nav id="mobile-navigation" className="mobile-menu animate-fade-in" aria-label="Mobile navigation">
           <Link href="/" onClick={() => setIsOpen(false)}>Home</Link>
           <Link href="/about" onClick={() => setIsOpen(false)}>About</Link>
           <Link href="/contact" onClick={() => setIsOpen(false)}>Contact</Link>
-        </div>
+        </nav>
       )}
     </header>
   );
