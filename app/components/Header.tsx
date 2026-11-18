@@ -22,7 +22,7 @@ export default function Header() {
     <header className={`site-header ${isScrolled ? "scrolled" : ""}`}>
       <div className="container nav">
         <Link href="/" className="brand" onClick={() => setIsOpen(false)}>
-          Tools<span>AB</span>
+          <img src="/logo.png" alt="ToolsAB Logo" className="logo" style={{ width: "90px", position: "relative", top: "5px"}}/>
         </Link>
 
         {/* Desktop Nav */}

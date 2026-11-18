@@ -82,6 +82,7 @@ li { margin-bottom: 0.5rem; }
   position: sticky;
   top: 1rem;
   z-index: 100;
+  padding: 4px 0;
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -89,7 +90,8 @@ li { margin-bottom: 0.5rem; }
   border-radius: 100px;
   max-width: 1000px;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
   /* Smooth transition for scroll effect */
   transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
@@ -201,7 +203,6 @@ textarea:focus-visible {
 .site-header {
   top: 0.75rem;
   max-width: 1160px;
-  padding: 0.75rem 1.5rem;
   border-color: rgba(226, 230, 237, 0.9);
   background: rgba(255, 255, 255, 0.88);
   box-shadow: 0 10px 35px rgba(23, 32, 51, 0.07);
@@ -1451,7 +1452,6 @@ textarea:focus-visible {
     top: 0.5rem;
     max-width: calc(100% - 24px);
     margin: 0 12px;
-    padding: 0.75rem 1rem;
     border: 1px solid rgba(226, 230, 237, 0.9);
     border-radius: 18px;
   }
