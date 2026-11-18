@@ -20,36 +20,36 @@ const mainPages = [
 ];
 
 // PDF pages from your Vercel build output
-const pdfPages = [
-  "/pdf",
-  "/pdf/add-watermark",
-  "/pdf/compress-image",
-  "/pdf/compress-pdf",
-  "/pdf/crop-pdf",
-  "/pdf/delete-pdf",
-  "/pdf/edit-pdf",
-  "/pdf/excel-to-pdf",
-  "/pdf/extract-pdf",
-  "/pdf/html-to-pdf",
-  "/pdf/image-to-pdf",
-  "/pdf/merge-pdf",
-  "/pdf/ocr-pdf",
-  "/pdf/organize-pdf",
-  "/pdf/page-number",
-  "/pdf/pdf-to-excel",
-  "/pdf/pdf-to-image",
-  "/pdf/pdf-to-pdfa",
-  "/pdf/pdf-to-ppt",
-  "/pdf/pdf-to-word",
-  "/pdf/ppt-to-pdf",
-  "/pdf/protect-pdf",
-  "/pdf/remove-watermark",
-  "/pdf/rotate-pdf",
-  "/pdf/scan-pdf",
-  "/pdf/split-pdf",
-  "/pdf/unlock-pdf",
-  "/pdf/word-to-pdf",
-];
+// const pdfPages = [
+//   "/pdf",
+//   "/pdf/add-watermark",
+//   "/pdf/compress-image",
+//   "/pdf/compress-pdf",
+//   "/pdf/crop-pdf",
+//   "/pdf/delete-pdf",
+//   "/pdf/edit-pdf",
+//   "/pdf/excel-to-pdf",
+//   "/pdf/extract-pdf",
+//   "/pdf/html-to-pdf",
+//   "/pdf/image-to-pdf",
+//   "/pdf/merge-pdf",
+//   "/pdf/ocr-pdf",
+//   "/pdf/organize-pdf",
+//   "/pdf/page-number",
+//   "/pdf/pdf-to-excel",
+//   "/pdf/pdf-to-image",
+//   "/pdf/pdf-to-pdfa",
+//   "/pdf/pdf-to-ppt",
+//   "/pdf/pdf-to-word",
+//   "/pdf/ppt-to-pdf",
+//   "/pdf/protect-pdf",
+//   "/pdf/remove-watermark",
+//   "/pdf/rotate-pdf",
+//   "/pdf/scan-pdf",
+//   "/pdf/split-pdf",
+//   "/pdf/unlock-pdf",
+//   "/pdf/word-to-pdf",
+// ];
 
 // Standalone tools from your homepage
 const standaloneTools = [
@@ -78,7 +78,7 @@ const additionalToolPages = Object.keys(ADDITIONAL_TOOLS)
 export default function sitemap(): MetadataRoute.Sitemap {
   const allPages = [
     ...mainPages,
-    ...pdfPages,
+    // ...pdfPages,
     ...standaloneTools,
     ...additionalToolPages,
   ];
