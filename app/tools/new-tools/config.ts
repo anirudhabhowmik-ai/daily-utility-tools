@@ -164,7 +164,7 @@ export function isAdditionalToolKind(value: string): value is AdditionalToolKind
 export function getToolMetadata(kind: AdditionalToolKind): Metadata {
   const tool = ADDITIONAL_TOOLS[kind];
   return {
-    title: `${tool.title} | DailyTools`,
+    title: `${tool.title} | ToolsAB`,
     description: tool.description,
     alternates: { canonical: `/tools/${kind}` },
   };

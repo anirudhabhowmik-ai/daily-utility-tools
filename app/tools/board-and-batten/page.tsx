@@ -3,7 +3,7 @@ import BoardBatten from "./BoardBatten";
 import ToolBreadcrumb from "../ToolBreadcrumb";
 
 export const metadata: Metadata = {
-  title: "Board and Batten Layout Calculator | DailyTools",
+  title: "Board and Batten Layout Calculator | ToolsAB",
   description: "Plan vertical board-and-batten spacing around wall openings and estimate vertical material needs with an interactive layout preview.",
   alternates: { canonical: "/tools/board-and-batten" },
 };

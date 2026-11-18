@@ -9,6 +9,10 @@ type ToolLandingPageProps = {
   steps: string[];
   faqs: Array<{ question: string; answer: string }>;
   note?: string;
+  category?: string;
+  parentHref?: string;
+  parentLabel?: string;
+  showPageHeader?: boolean;
 };
 
 export default function ToolLandingPage({
@@ -19,15 +23,21 @@ export default function ToolLandingPage({
   steps,
   faqs,
   note,
+  category,
+  parentHref,
+  parentLabel,
+  showPageHeader = true,
 }: ToolLandingPageProps) {
   return (
-    <article className="animate-fade-in">
-      <ToolBreadcrumb title={title} />
-      <header className="tool-page-header">
-        <p className="tool-page-category">Browser-based utility</p>
-        <h1>{title}</h1>
-        <p>{summary}</p>
-      </header>
+    <article className={`animate-fade-in${showPageHeader ? "" : " tool-landing-page-compact"}`}>
+      <ToolBreadcrumb title={title} parentHref={parentHref} parentLabel={parentLabel} />
+      {showPageHeader ? (
+        <header className="tool-page-header">
+          <p className="tool-page-category">{category || "Browser-based utility"}</p>
+          <h1>{title}</h1>
+          <p>{summary}</p>
+        </header>
+      ) : null}
 
       {toolContent}
 

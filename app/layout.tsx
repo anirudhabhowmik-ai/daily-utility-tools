@@ -4,10 +4,10 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 
 export const metadata: Metadata = {
-  title: "DailyTools | Premium Privacy-First Web Utilities",
-  description: "Fast, free, and beautifully designed web tools. No sign-up, no data tracking. 100% client-side processing.",
+  title: "ToolsAB | Premium Privacy-First Web Utilities",
+  description: "Fast, free web tools. Most tools run in your browser; PDF conversions use a processing service.",
   openGraph: {
-    title: "DailyTools | Premium Web Utilities",
+    title: "ToolsAB | Premium Web Utilities",
     description: "Fast, free, and beautifully designed web tools.",
     type: "website",
   },

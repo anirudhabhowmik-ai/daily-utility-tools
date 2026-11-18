@@ -77,7 +77,7 @@ export default function ToolShell({
     <section className="tool-interface" aria-label="Interactive tool">
       <header className="tool-workspace-header">
         <div>
-          <p className="tool-workspace-kicker">DAILYTOOLS · BROWSER WORKSPACE</p>
+          <p className="tool-workspace-kicker">ToolsAB · BROWSER WORKSPACE</p>
           <h2 className="tool-workspace-title">{title}</h2>
           <p className="tool-workspace-caption">Adjust the inputs, review your result, and export when you are ready.</p>
         </div>

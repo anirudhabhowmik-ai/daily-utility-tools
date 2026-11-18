@@ -3,7 +3,7 @@ import ToolLandingPage from "../ToolLandingPage";
 import PetFeedingTracker from "./PetFeedingTracker";
 
 export const metadata: Metadata = {
-  title: "Exotic Pet Feeding Tracker | DailyTools",
+  title: "Exotic Pet Feeding Tracker | ToolsAB",
   description: "Compare daily pet feeding amounts with a target provided by your veterinarian. This browser tool does not prescribe nutrition.",
   alternates: { canonical: "/tools/exotic-pet-nutrition-calculator" },
 };

@@ -3,7 +3,7 @@ import ToolLandingPage from "../ToolLandingPage";
 import StairCarpetCalculator from "./StairCarpetCalculator";
 
 export const metadata: Metadata = {
-  title: "Stair Carpet Calculator | DailyTools",
+  title: "Stair Carpet Calculator | ToolsAB",
   description: "Estimate carpet and padding needs for a staircase with a simple measurement-based calculation.",
   alternates: { canonical: "/tools/stair-carpet-calculator" },
 };

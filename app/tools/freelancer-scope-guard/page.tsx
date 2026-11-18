@@ -3,7 +3,7 @@ import ToolLandingPage from "../ToolLandingPage";
 import ScopeGuard from "./ScopeGuard";
 
 export const metadata: Metadata = {
-  title: "Freelancer Scope Guard | DailyTools",
+  title: "Freelancer Scope Guard | ToolsAB",
   description: "Track project scope, change requests, and delivery priorities to keep freelance work on budget and on time.",
   alternates: { canonical: "/tools/freelancer-scope-guard" },
 };

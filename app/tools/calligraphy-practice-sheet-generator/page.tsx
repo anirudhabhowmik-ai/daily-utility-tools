@@ -3,7 +3,7 @@ import ToolLandingPage from "../ToolLandingPage";
 import CalligraphySheetGenerator from "./CalligraphySheetGenerator";
 
 export const metadata: Metadata = {
-  title: "Calligraphy Practice Sheet Generator | DailyTools",
+  title: "Calligraphy Practice Sheet Generator | ToolsAB",
   description: "Generate printable calligraphy practice sheets with spacing guides, slant lines, and simple layouts for practice.",
   alternates: { canonical: "/tools/calligraphy-practice-sheet-generator" },
 };

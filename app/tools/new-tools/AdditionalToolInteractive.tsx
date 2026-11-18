@@ -82,7 +82,7 @@ export default function AdditionalToolInteractive({ kind }: { kind: AdditionalTo
     <section className="tool-interface" aria-label="Interactive tool workspace">
       <header className="tool-workspace-header">
         <div>
-          <p className="tool-workspace-kicker">{categoryByTool[kind].toUpperCase()} · DAILYTOOLS</p>
+          <p className="tool-workspace-kicker">{categoryByTool[kind].toUpperCase()} · ToolsAB</p>
           <h2 className="tool-workspace-title">{toolNames[kind]}</h2>
           <p className="tool-workspace-caption">Configure your options, then review the result and its assumptions.</p>
         </div>

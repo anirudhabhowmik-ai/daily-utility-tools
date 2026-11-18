@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | DailyTools",
-  description: "Learn how DailyTools handles your data, browser processing, and third-party ad services.",
+  title: "Privacy Policy | ToolsAB",
+  description: "Learn how ToolsAB handles your data, browser processing, and third-party ad services.",
   alternates: { canonical: "/privacy-policy" },
 };
 
@@ -13,14 +13,14 @@ export default function PrivacyPolicyPage() {
         <p className="tool-page-category">Your information</p>
         <h1>Privacy Policy</h1>
         <p>
-          DailyTools is designed around a simple principle: keep data local when possible and avoid collecting unnecessary personal information.
+          ToolsAB is designed around a simple principle: keep data local when possible and avoid collecting unnecessary personal information.
         </p>
       </header>
 
       <div className="article-content">
         <h2>Information we do not collect</h2>
         <p>
-          Most tools on DailyTools run directly in your browser. In many cases, the data you enter is processed locally on your device and is not transmitted to our servers.
+          Most tools on ToolsAB run directly in your browser. In many cases, the data you enter is processed locally on your device and is not transmitted to our servers.
         </p>
         <p>
           We do not require you to create an account, provide your email address, or submit personal profile information in order to use the calculator or utility tools on this site.
@@ -28,7 +28,7 @@ export default function PrivacyPolicyPage() {
 
         <h2>Files and text entered into tools</h2>
         <p>
-          If you select a file or enter information into a tool, it is generally processed in your browser and is not sent to a DailyTools processing server. Some tools save a working copy in your browser&apos;s local storage, such as a subscription list or seating plan. The trip expense tool can encode trip details in a shareable link; anyone who receives that link can read the encoded information. Tool pages describe these behaviors before use.
+          Most files and information entered into tools are processed in your browser. PDF tools are an exception: when you use them, the selected files and options are sent to the PDF processing service configured for this deployment. Do not upload sensitive files unless you are comfortable with that service&apos;s handling of them. Some tools save a working copy in your browser&apos;s local storage, such as a subscription list or seating plan. The trip expense tool can encode trip details in a shareable link; anyone who receives that link can read the encoded information. Tool pages describe these behaviors before use.
         </p>
 
         <h2>Browser storage, cookies, and analytics</h2>

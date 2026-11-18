@@ -3,7 +3,7 @@ import ToolLandingPage from "../ToolLandingPage";
 import BoardFeetCalculator from "./BoardFeetCalculator";
 
 export const metadata: Metadata = {
-  title: "Board Feet Calculator | DailyTools",
+  title: "Board Feet Calculator | ToolsAB",
   description: "Estimate board feet for lumber projects and woodworking jobs using size, quantity, and thickness inputs.",
   alternates: { canonical: "/tools/board-feet-calculator" },
 };

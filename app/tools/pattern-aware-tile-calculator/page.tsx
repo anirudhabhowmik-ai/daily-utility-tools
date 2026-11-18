@@ -3,7 +3,7 @@ import ToolLandingPage from "../ToolLandingPage";
 import TileCalculator from "./TileCalculator";
 
 export const metadata: Metadata = {
-  title: "Pattern-Aware Tile Calculator | DailyTools",
+  title: "Pattern-Aware Tile Calculator | ToolsAB",
   description: "Estimate tile counts for offset, staggered, and pattern-based layouts before buying materials.",
   alternates: { canonical: "/tools/pattern-aware-tile-calculator" },
 };

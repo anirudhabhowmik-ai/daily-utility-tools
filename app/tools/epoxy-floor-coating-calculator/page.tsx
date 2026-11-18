@@ -3,7 +3,7 @@ import ToolLandingPage from "../ToolLandingPage";
 import CoatingCalculator from "./CoatingCalculator";
 
 export const metadata: Metadata = {
-  title: "Epoxy Floor Coating Calculator | DailyTools",
+  title: "Epoxy Floor Coating Calculator | ToolsAB",
   description: "Estimate floor coating coverage, resin quantity, and decorative additives for garage and workshop floors.",
   alternates: { canonical: "/tools/epoxy-floor-coating-calculator" },
 };

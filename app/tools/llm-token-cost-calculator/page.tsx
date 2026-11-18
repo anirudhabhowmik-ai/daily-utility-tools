@@ -3,7 +3,7 @@ import ToolLandingPage from "../ToolLandingPage";
 import TokenCostCalculator from "./TokenCostCalculator";
 
 export const metadata: Metadata = {
-  title: "LLM Token Cost Calculator | DailyTools",
+  title: "LLM Token Cost Calculator | ToolsAB",
   description: "Estimate token usage and approximate AI model costs for prompts, chat sessions, and long-form generation tasks.",
   alternates: { canonical: "/tools/llm-token-cost-calculator" },
 };

@@ -223,7 +223,7 @@ function PrintablePlanner() {
     const margin = 38;
     let content = "0.5 w\n0.12 G\n";
     content += pdfText(style === "calendar" ? "Monthly Calendar" : style === "habit" ? "Habit Tracker" : "Dot Grid", margin, height - 48, 20);
-    content += pdfText("Created with DailyTools - print at actual size", margin, height - 66, 9);
+    content += pdfText("Created with ToolsAB - print at actual size", margin, height - 66, 9);
     if (style === "calendar") {
       if (!/^\d{4}-\d{2}$/.test(month)) {
         setError("Choose a valid month.");
@@ -269,7 +269,7 @@ function PrintablePlanner() {
       content += pdfText(`Dot spacing: ${dotSpacing} mm`, margin, height - 100, 10);
     }
     setReady(true);
-    downloadBlob(`dailytools-${style}-${pageSize}.pdf`, createPdf(width, height, content));
+    downloadBlob(`ToolsAB-${style}-${pageSize}.pdf`, createPdf(width, height, content));
   }
 
   return (

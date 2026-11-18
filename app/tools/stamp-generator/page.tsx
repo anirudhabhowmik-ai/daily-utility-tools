@@ -3,7 +3,7 @@ import StampGenerator from "./StampGenerator";
 import ToolBreadcrumb from "../ToolBreadcrumb";
 
 export const metadata: Metadata = {
-  title: "Free Digital Stamp Generator (GoodNotes & Notability) | DailyTools",
+  title: "Free Digital Stamp Generator (GoodNotes & Notability) | ToolsAB",
   description: "Create custom transparent PNG stamps for digital planning. Free, no sign-up, and 100% private. Works perfectly with GoodNotes, Notability, and iPad planning apps.",
 };
 

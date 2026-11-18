@@ -3,7 +3,7 @@ import ToolLandingPage from "../ToolLandingPage";
 import OfflineRedactorTool from "./OfflineRedactorTool";
 
 export const metadata: Metadata = {
-  title: "Offline Image Redactor | DailyTools",
+  title: "Offline Image Redactor | ToolsAB",
   description: "Blur or redact sensitive details in images in your browser without uploading them to a server.",
   alternates: { canonical: "/tools/offline-image-redactor" },
 };

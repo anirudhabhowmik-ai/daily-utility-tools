@@ -3,7 +3,7 @@ import ToolLandingPage from "../ToolLandingPage";
 import ColoringPageConverter from "./ColoringPageConverter";
 
 export const metadata: Metadata = {
-  title: "Photo to Coloring Page Converter | DailyTools",
+  title: "Photo to Coloring Page Converter | ToolsAB",
   description: "Turn a photo into a simple black-and-white coloring page for kids, classrooms, or creative practice.",
   alternates: { canonical: "/tools/photo-to-coloring-page-converter" },
 };

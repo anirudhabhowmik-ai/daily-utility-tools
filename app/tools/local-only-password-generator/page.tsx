@@ -3,7 +3,7 @@ import ToolLandingPage from "../ToolLandingPage";
 import LocalOnlyPasswordGenerator from "./LocalOnlyPasswordGenerator";
 
 export const metadata: Metadata = {
-  title: "Local-Only Password Generator | DailyTools",
+  title: "Local-Only Password Generator | ToolsAB",
   description: "Generate strong passwords in your browser with custom length, symbols, and character rules.",
   alternates: { canonical: "/tools/local-only-password-generator" },
 };

@@ -264,7 +264,7 @@ function isSeatingState(value: unknown): value is SeatingState {
 }
 
 function SeatingPlanner() {
-  const [plan, setPlan, storageError] = useLocalStorageState("dailytools-seating-plan-v1", starterSeating, isSeatingState);
+  const [plan, setPlan, storageError] = useLocalStorageState("ToolsAB-seating-plan-v1", starterSeating, isSeatingState);
   const [guestName, setGuestName] = useState("");
   const [tableName, setTableName] = useState("");
   const [status, setStatus] = useState("");

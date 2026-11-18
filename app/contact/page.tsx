@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact DailyTools | Questions and Feedback",
-  description: "Contact DailyTools with feedback, questions, or support requests about our browser-based utility tools.",
+  title: "Contact ToolsAB | Questions and Feedback",
+  description: "Contact ToolsAB with feedback, questions, or support requests about our browser-based utility tools.",
   alternates: { canonical: "/contact" },
 };
 
@@ -11,9 +11,9 @@ export default function ContactPage() {
     <article className="animate-fade-in">
       <header className="tool-page-header">
         <p className="tool-page-category">Get in touch</p>
-        <h1>Contact DailyTools</h1>
+        <h1>Contact ToolsAB</h1>
         <p>
-          We welcome feedback, suggestions, and questions about the tools and content on DailyTools.
+          We welcome feedback, suggestions, and questions about the tools and content on ToolsAB.
         </p>
       </header>
 
@@ -25,7 +25,7 @@ export default function ContactPage() {
 
         <p>
           <strong>Email:</strong>{" "}
-          <a href="mailto:hello@dailytools.app">hello@dailytools.app</a>
+          <a href="mailto:hello@ToolsAB.app">hello@ToolsAB.app</a>
         </p>
 
         <p>

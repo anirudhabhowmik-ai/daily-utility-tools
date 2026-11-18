@@ -3,7 +3,7 @@ import ToolLandingPage from "../ToolLandingPage";
 import JwtTool from "./JwtTool";
 
 export const metadata: Metadata = {
-  title: "JWT Decoder | DailyTools",
+  title: "JWT Decoder | ToolsAB",
   description: "Decode JWT payloads in the browser to inspect claims, expiry, and token structure without revealing secrets.",
   alternates: { canonical: "/tools/jwt-decoder" },
 };

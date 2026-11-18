@@ -5,7 +5,7 @@ import type { ReactNode, SetStateAction } from "react";
 import FileUploadField from "../FileUploadField";
 
 const fieldClass = "tool-field";
-const storageEventPrefix = "dailytools-local-storage:";
+const storageEventPrefix = "ToolsAB-local-storage:";
 const storageErrorPrefix = "\0storage-error:";
 
 function getLocalStorageSnapshot(key: string) {

@@ -3,7 +3,7 @@ import ToolLandingPage from "../ToolLandingPage";
 import GravelCalculator from "./GravelCalculator";
 
 export const metadata: Metadata = {
-  title: "French Drain Gravel Calculator | DailyTools",
+  title: "French Drain Gravel Calculator | ToolsAB",
   description: "Estimate gravel volume and trench dimensions for a French drain before you purchase materials.",
   alternates: { canonical: "/tools/french-drain-gravel-calculator" },
 };

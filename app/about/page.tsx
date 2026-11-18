@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About DailyTools | Privacy-First Utility Collection",
-  description: "Learn how DailyTools helps people complete common tasks with fast, private, browser-based tools.",
+  title: "About ToolsAB | Privacy-First Utility Collection",
+  description: "Learn how ToolsAB helps people complete common tasks with fast, private, browser-based tools.",
   alternates: { canonical: "/about" },
 };
 
@@ -11,9 +11,9 @@ export default function AboutPage() {
     <article className="animate-fade-in">
       <header className="tool-page-header">
         <p className="tool-page-category">Our story</p>
-        <h1>About DailyTools</h1>
+        <h1>About ToolsAB</h1>
         <p>
-          DailyTools is built for everyday problem-solving without the clutter, sign-ups, and data-sharing practices that slow down normal web experiences.
+          ToolsAB is built for everyday problem-solving without the clutter, sign-ups, and data-sharing practices that slow down normal web experiences.
         </p>
       </header>
 
@@ -23,7 +23,7 @@ export default function AboutPage() {
           Many online tools are overloaded with pop-ups, unclear pricing, and unnecessary account requirements. We wanted a simpler approach: a clean site with practical utilities, fast performance, and respect for user privacy.
         </p>
         <p>
-          Most tools on DailyTools process data directly in the browser rather than sending it to a DailyTools processing server. Some save a draft in browser storage or create a shareable link; the individual tool page explains those choices.
+          Most tools on ToolsAB process data directly in the browser. PDF conversion tools send files to a processing service; each PDF page explains this before use. Some tools also save a draft in browser storage or create a shareable link.
         </p>
 
         <h2>Why privacy matters</h2>

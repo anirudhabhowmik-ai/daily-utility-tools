@@ -224,7 +224,7 @@ function upcomingRenewalDates(item: Subscription, now = new Date()) {
 
 function SubscriptionVisualizer() {
   const [currency, setCurrency] = useState("USD");
-  const [items, setItems, storageError] = useLocalStorageState("dailytools-subscriptions-v1", emptySubscriptions, isSubscriptionList);
+  const [items, setItems, storageError] = useLocalStorageState("ToolsAB-subscriptions-v1", emptySubscriptions, isSubscriptionList);
   const [paste, setPaste] = useState("");
   const [error, setError] = useState("");
 
@@ -254,10 +254,10 @@ function SubscriptionVisualizer() {
     for (const item of items) {
       for (const renewal of upcomingRenewalDates(item, now)) {
         const date = `${renewal.getFullYear()}${String(renewal.getMonth() + 1).padStart(2, "0")}${String(renewal.getDate()).padStart(2, "0")}`;
-        events.push(`BEGIN:VEVENT\r\nUID:${item.id}-${date}@dailytools.local\r\nDTSTAMP:${stamp}\r\nDTSTART;VALUE=DATE:${date}\r\nSUMMARY:${escapeIcs(item.name)} renewal\r\nDESCRIPTION:${escapeIcs(currency.toUpperCase())} ${item.amount.toFixed(2)} (${item.frequency})\r\nEND:VEVENT`);
+        events.push(`BEGIN:VEVENT\r\nUID:${item.id}-${date}@ToolsAB.local\r\nDTSTAMP:${stamp}\r\nDTSTART;VALUE=DATE:${date}\r\nSUMMARY:${escapeIcs(item.name)} renewal\r\nDESCRIPTION:${escapeIcs(currency.toUpperCase())} ${item.amount.toFixed(2)} (${item.frequency})\r\nEND:VEVENT`);
       }
     }
-    const calendar = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//DailyTools//Subscription Renewals//EN\r\n${events.join("\r\n")}\r\nEND:VCALENDAR\r\n`;
+    const calendar = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//ToolsAB//Subscription Renewals//EN\r\n${events.join("\r\n")}\r\nEND:VCALENDAR\r\n`;
     downloadBlob("subscription-renewals.ics", new Blob([calendar], { type: "text/calendar;charset=utf-8" }));
   }
 

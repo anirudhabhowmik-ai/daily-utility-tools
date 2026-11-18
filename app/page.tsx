@@ -3,12 +3,13 @@ import Link from "next/link";
 import { ADDITIONAL_TOOLS } from "./tools/new-tools/config";
 
 export const metadata: Metadata = {
-  title: "DailyTools | Premium Privacy-First Web Utilities",
-  description: "Explore a collection of fast, free, and beautifully designed web tools. 100% client-side processing means your data never leaves your browser.",
+  title: "ToolsAB | Premium Privacy-First Web Utilities",
+  description: "Explore fast, free web utilities. Most tools work in your browser; PDF conversions use a processing service.",
   alternates: { canonical: "/" },
 };
 
 const allTools = [
+  { title: "All PDF Tools", category: "PDF Tools", href: "/pdf" },
   { title: "Digital Stamp Generator", category: "Digital Planning", href: "/tools/stamp-generator" },
   { title: "Board & Batten Calculator", category: "Home Improvement", href: "/tools/board-and-batten" },
   { title: "Offline Image Redactor", category: "Privacy Tools", href: "/tools/offline-image-redactor" },
@@ -48,9 +49,9 @@ export default function Home() {
           </p>
           <div className="home-hero-actions">
             <Link href="#tools" className="btn">Explore all tools <span aria-hidden="true">↓</span></Link>
-            <Link href="/about" className="home-secondary-link">How DailyTools works <span aria-hidden="true">↗</span></Link>
+            <Link href="/about" className="home-secondary-link">How ToolsAB works <span aria-hidden="true">↗</span></Link>
           </div>
-          <ul className="home-trust-points" aria-label="DailyTools benefits">
+          <ul className="home-trust-points" aria-label="ToolsAB benefits">
             <li><span aria-hidden="true">✓</span> No sign-up</li>
             <li><span aria-hidden="true">✓</span> Privacy-minded</li>
             <li><span aria-hidden="true">✓</span> Free to use</li>
@@ -99,20 +100,20 @@ export default function Home() {
       </section>
 
       <div className="article-content home-about">
-        <h2>Why Build DailyTools?</h2>
+        <h2>Why Build ToolsAB?</h2>
         <p>
-          If you have ever searched for a simple calculator or image converter, you know the frustration. Most websites are cluttered with intrusive pop-up ads, force you to create an account, or worse—require you to upload your sensitive files to a server where you lose control of your data.
+          If you have ever searched for a simple calculator or image converter, you know the frustration. Many websites are cluttered with intrusive pop-up ads, force you to create an account, or upload files without clearly explaining how they are processed.
         </p>
         <p>
-          I built DailyTools to fix this. As a developer, I wanted a clean, fast, and ad-light environment where people could solve everyday problems in seconds. Every tool on this site is built with a &quot;Privacy-First&quot; architecture.
+          I built ToolsAB to fix this. As a developer, I wanted a clean, fast, and ad-light environment where people could solve everyday problems in seconds. Most tools process data in your browser; PDF conversions use a processing service and explain that before you upload.
         </p>
 
         <h2>How Our &quot;Client-Side&quot; Tools Work</h2>
         <p>
-          Unlike traditional web applications, the tools on this site do not rely on a backend server to process your data. When you use our tools, the calculations and processing happen locally on your device.
+          Many tools on this site process data locally in your browser. PDF conversion tools are an exception: files are sent to a processing service, as explained on each PDF tool page.
         </p>
         <p>
-          Most tools process your files, passwords, and text locally in your browser rather than sending them to a DailyTools processing server. A few tools save drafts in browser storage or create shareable links; each page explains those behaviors so you can choose what to save or share.
+          Browser-based tools keep their processing on your device. Some save drafts in browser storage or create shareable links; each page explains those behaviors so you can choose what to save or share.
         </p>
       </div>
     </div>
