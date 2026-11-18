@@ -21,7 +21,14 @@ const PIPE_PRESETS = [
   { label: "3″", od: 3.5 },
   { label: "4″", od: 4.8 },
   { label: "6″", od: 6.9 },
-  { label: "8″", od: 9.0 },
+  { label: "8″", od: 9.5 },
+  { label: "10″", od: 11.9 },
+  { label: "12″", od: 14.5 },
+  { label: "15″", od: 18.0 },
+  { label: "18″", od: 21.4 },
+  { label: "24″", od: 28.0 },
+  { label: "30″", od: 35.5 },
+  { label: "36″", od: 42.0 },
 ];
 
 // Approximate loose bulk densities (lb / cu ft). Always confirm with supplier.
@@ -30,6 +37,10 @@ const GRAVEL_PRESETS = [
   { name: "Pea gravel", lb: 105 },
   { name: "Drain rock 1½″", lb: 92 },
   { name: "River rock", lb: 100 },
+  { name: "Crushed stone #57", lb: 97 },
+  { name: "Crushed granite", lb: 100 },
+  { name: "Crushed limestone", lb: 105 },
+  { name: "Large stone 2–3″", lb: 90 },
 ];
 
 const DEFAULTS = {
@@ -193,8 +204,9 @@ const IconCheck = () => (
 /* ------------------------------------------------------------------ */
 
 function NumField({
-  label, value, onChange, suffix, hint, error,
+  label, value, onChange, suffix, hint, error, id,
 }: {
+  id?: string;
   label: string;
   value: number;
   onChange: (v: number) => void;
@@ -215,6 +227,7 @@ function NumField({
       <span className="gc-label">{label}</span>
       <div className="gc-wrap">
         <input
+          id={id}
           className={`gc-input${suffix ? " has-suffix" : ""}${error ? " err" : ""}`}
           type="text"
           inputMode="decimal"
@@ -332,6 +345,8 @@ export default function GravelCalculator() {
   const [compaction, setCompaction] = useState(DEFAULTS.compaction);
   const [bagSize, setBagSize] = useState(DEFAULTS.bagSize);
   const [density, setDensity] = useState(DEFAULTS.density);
+  const [gravelName, setGravelName] = useState(GRAVEL_PRESETS[0].name);
+  const [customGravel, setCustomGravel] = useState("");
   const [price, setPrice] = useState(DEFAULTS.price);
   const [priceBasis, setPriceBasis] = useState<PriceBasis>(DEFAULTS.priceBasis);
   const [currency, setCurrency] = useState(DEFAULTS.currency);
@@ -414,7 +429,7 @@ export default function GravelCalculator() {
   const pipeInches = r.pipeFt * 12;
   const activePipe = PIPE_PRESETS.find((p) => Math.abs(p.od - pipeInches) < 0.06);
   const densityLb = metric ? density * LB_PER_CUFT_PER_KG_M3 : density;
-  const activeGravel = GRAVEL_PRESETS.find((g) => Math.abs(g.lb - densityLb) < 0.6);
+  const activeGravel = GRAVEL_PRESETS.find((g) => g.name === gravelName && Math.abs(g.lb - densityLb) < 0.6);
 
   /* ---------- actions ---------- */
   const changeUnit = (next: Unit) => {
@@ -451,6 +466,8 @@ export default function GravelCalculator() {
     setCompaction(DEFAULTS.compaction);
     setBagSize(DEFAULTS.bagSize);
     setDensity(DEFAULTS.density);
+    setGravelName(GRAVEL_PRESETS[0].name);
+    setCustomGravel("");
     setPrice(DEFAULTS.price);
     setPriceBasis(DEFAULTS.priceBasis);
     setCurrency(DEFAULTS.currency);
@@ -458,7 +475,10 @@ export default function GravelCalculator() {
   };
 
   const pickPipe = (od: number) => setPipeDiameter(round(fromFeet(od / 12, unit)));
-  const pickGravel = (lb: number) => setDensity(metric ? round(lb / LB_PER_CUFT_PER_KG_M3, 0) : lb);
+  const pickGravel = (name: string, lb: number) => {
+    setGravelName(name);
+    setDensity(metric ? round(lb / LB_PER_CUFT_PER_KG_M3, 0) : lb);
+  };
 
   const copyResults = async () => {
     const lines = [
@@ -466,6 +486,8 @@ export default function GravelCalculator() {
       "--------------------------------",
       `Trench: ${fmt(length)} ${unit} long × ${fmt(trenchWidth)} ${unit} wide × ${fmt(depthDisp)} ${unit} deep`,
       `Layers: ${fmt(baseDepth)} base + ${fmt(pipeDiameter)} pipe + ${fmt(coverDepth)} cover (${unit})`,
+      `Pipe: ${activePipe ? activePipe.label + " nominal, " : ""}${fmt(pipeInches, 2)} in outside diameter`,
+      `Gravel: ${activeGravel ? activeGravel.name : customGravel.trim() || "Custom"} (${fmt(density, 1)} ${metric ? "kg/m³" : "lb/cu ft"})`,
       "--------------------------------",
       `Order volume: ${vol(r.orderVolume)} (≈ ${fmt(r.cubicYards)} cu yd)`,
       `Bags (${fmt(bagSize, 3)} ${volumeLabel(unit)}): ${r.bags}`,
@@ -531,13 +553,25 @@ export default function GravelCalculator() {
                     {p.label} pipe
                   </button>
                 ))}
+                <button
+                  type="button"
+                  className="gc-chip"
+                  aria-pressed={!activePipe}
+                  onClick={() => {
+                    const el = document.getElementById("gc-pipe-od") as HTMLInputElement | null;
+                    el?.scrollIntoView({ block: "center", behavior: "smooth" });
+                    el?.focus();
+                  }}
+                >
+                  Custom size
+                </button>
               </div>
               <p className="gc-hint" style={{ margin: "8px 0 16px" }}>
                 {activePipe ? `Outside diameter set to ${activePipe.od} in.` : "Custom outside diameter in use."} Check your pipe's label for the exact value.
               </p>
 
               <div className="gc-grid">
-                <NumField label="Pipe outside diameter" value={pipeDiameter} onChange={setPipeDiameter} suffix={unit} error={errs.pipe} />
+                <NumField id="gc-pipe-od" label="Pipe outside diameter" value={pipeDiameter} onChange={setPipeDiameter} suffix={unit} error={errs.pipe} hint="Any size works. Type your own." />
                 <NumField label="Gravel below pipe" value={baseDepth} onChange={setBaseDepth} suffix={unit} hint="Bedding under the pipe." />
                 <NumField label="Gravel above pipe" value={coverDepth} onChange={setCoverDepth} suffix={unit} hint="Cover over the pipe." />
               </div>
@@ -550,18 +584,45 @@ export default function GravelCalculator() {
               <div className="gc-label" style={{ marginBottom: 8 }}>Gravel type</div>
               <div className="gc-chips" role="group" aria-label="Gravel type">
                 {GRAVEL_PRESETS.map((g) => (
-                  <button key={g.name} type="button" className="gc-chip" aria-pressed={activeGravel?.name === g.name} onClick={() => pickGravel(g.lb)}>
+                  <button key={g.name} type="button" className="gc-chip" aria-pressed={activeGravel?.name === g.name} onClick={() => pickGravel(g.name, g.lb)}>
                     {g.name}
                   </button>
                 ))}
+                <button
+                  type="button"
+                  className="gc-chip"
+                  aria-pressed={!activeGravel}
+                  onClick={() => {
+                    setGravelName("Custom");
+                    const el = document.getElementById("gc-density") as HTMLInputElement | null;
+                    el?.scrollIntoView({ block: "center", behavior: "smooth" });
+                    el?.focus();
+                  }}
+                >
+                  Other / custom
+                </button>
               </div>
+              {!activeGravel && (
+                <label className="gc-field" style={{ marginTop: 14 }}>
+                  <span className="gc-label">Material name (optional)</span>
+                  <input
+                    className="gc-input"
+                    type="text"
+                    maxLength={40}
+                    placeholder="e.g. Local blue metal 20 mm"
+                    value={customGravel}
+                    onChange={(e) => setCustomGravel(e.target.value)}
+                  />
+                  <span className="gc-hint">Shown in your copied summary. Set the bulk density below for this material.</span>
+                </label>
+              )}
 
               <div className="gc-sub">Quantities</div>
               <div className="gc-grid">
                 <NumField label="Extra for waste" value={waste} onChange={setWaste} suffix="%" hint="Typical: 5–15%." error={errs.waste} />
                 <NumField label="Compaction allowance" value={compaction} onChange={setCompaction} suffix="%" hint="Extra for settling." error={errs.compaction} />
                 <NumField label="Bag size" value={bagSize} onChange={setBagSize} suffix={volumeLabel(unit)} hint="Printed on the bag." error={errs.bag} />
-                <NumField label="Bulk density" value={density} onChange={setDensity} suffix={metric ? "kg/m³" : "lb/cu ft"} hint="Ask your supplier." error={errs.density} />
+                <NumField id="gc-density" label="Bulk density" value={density} onChange={setDensity} suffix={metric ? "kg/m³" : "lb/cu ft"} hint="Edit for any material." error={errs.density} />
               </div>
             </section>
 
