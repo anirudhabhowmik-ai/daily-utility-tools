@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 const allTools = [
-  { title: "All PDF Tools", category: "PDF Tools", href: "/pdf" },
+  // { title: "All PDF Tools", category: "PDF Tools", href: "/pdf" },
   { title: "Digital Stamp Generator", category: "Digital Planning", href: "/tools/stamp-generator" },
   { title: "Board & Batten Calculator", category: "Home Improvement", href: "/tools/board-and-batten" },
   { title: "Offline Image Redactor", category: "Privacy Tools", href: "/tools/offline-image-redactor" },

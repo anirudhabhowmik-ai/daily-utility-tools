@@ -25,7 +25,7 @@ export default function ContactPage() {
 
         <p>
           <strong>Email:</strong>{" "}
-          <a href="mailto:hello@ToolsAB.app">hello@ToolsAB.app</a>
+          <a href="mailto:nextopdf@gmail.com">nextopdf@gmail.com</a>
         </p>
 
         <p>

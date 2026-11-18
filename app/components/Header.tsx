@@ -28,7 +28,7 @@ export default function Header() {
         {/* Desktop Nav */}
         <nav className="nav-links desktop-nav">
           <Link href="/">Home</Link>
-          <Link href="/pdf">All PDF Tools</Link>
+          {/* <Link href="/pdf">All PDF Tools</Link> */}
           <Link href="/about">About</Link>
           <Link href="/contact">Contact</Link>
         </nav>
@@ -62,7 +62,7 @@ export default function Header() {
       {isOpen && (
         <nav id="mobile-navigation" className="mobile-menu animate-fade-in" aria-label="Mobile navigation">
           <Link href="/" onClick={() => setIsOpen(false)}>Home</Link>
-          <Link href="/pdf" onClick={() => setIsOpen(false)}>All PDF Tools</Link>
+          {/* <Link href="/pdf" onClick={() => setIsOpen(false)}>All PDF Tools</Link> */}
           <Link href="/about" onClick={() => setIsOpen(false)}>About</Link>
           <Link href="/contact" onClick={() => setIsOpen(false)}>Contact</Link>
         </nav>
