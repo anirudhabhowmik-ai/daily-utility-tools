@@ -31,6 +31,7 @@ export default function ToolLandingPage({
   return (
     <article className={`animate-fade-in${showPageHeader ? "" : " tool-landing-page-compact"}`}>
       <ToolBreadcrumb title={title} parentHref={parentHref} parentLabel={parentLabel} />
+      {toolContent}
       {showPageHeader ? (
         <header className="tool-page-header">
           <p className="tool-page-category">{category || "Browser-based utility"}</p>
@@ -38,8 +39,6 @@ export default function ToolLandingPage({
           <p>{summary}</p>
         </header>
       ) : null}
-
-      {toolContent}
 
       <div className="article-content">
         <h2>Why this tool is useful</h2>

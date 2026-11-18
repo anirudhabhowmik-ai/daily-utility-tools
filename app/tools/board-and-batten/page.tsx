@@ -12,6 +12,9 @@ export default function BoardBattenPage() {
   return (
     <article className="animate-fade-in">
       <ToolBreadcrumb title="Board and Batten Layout Calculator" />
+
+      <BoardBatten />
+
       <header className="tool-page-header">
         <p className="tool-page-category">Home improvement</p>
         <h1>Board and Batten Layout Calculator</h1>
@@ -19,8 +22,6 @@ export default function BoardBattenPage() {
           Plan vertical batten spacing around doors, windows, and other wall obstacles, then estimate the required vertical material.
         </p>
       </header>
-
-      <BoardBatten />
 
       <div className="article-content">
         <h2>How the Calculator Works</h2>

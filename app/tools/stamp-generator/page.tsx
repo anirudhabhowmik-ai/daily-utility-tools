@@ -11,6 +11,10 @@ export default function StampGeneratorPage() {
   return (
     <article className="animate-fade-in">
       <ToolBreadcrumb title="Digital Stamp Generator" />
+
+      {/* The Tool */}
+      <StampGenerator />
+
       <header className="tool-page-header">
         <p className="tool-page-category">Digital planning</p>
         <h1>Free Custom Digital Stamp Generator</h1>
@@ -19,9 +23,6 @@ export default function StampGeneratorPage() {
           No sign-up required. Your data never leaves your browser.
         </p>
       </header>
-
-      {/* The Tool */}
-      <StampGenerator />
 
       {/* 1,000+ Words of SEO & AdSense Approved Content */}
       <div className="article-content">
