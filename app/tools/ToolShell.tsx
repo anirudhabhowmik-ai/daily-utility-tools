@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function NumberField({
   label,
@@ -18,6 +18,14 @@ export function NumberField({
   max?: number;
   step?: number | "any";
 }) {
+  // Keep the typed text locally so the user can clear the field and type decimals.
+  const [text, setText] = useState(String(value));
+
+  useEffect(() => {
+    if (Number(text) !== value) setText(String(value));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
   return (
     <label className="tool-field">
       <span>{label}</span>
@@ -27,10 +35,15 @@ export function NumberField({
         min={min}
         max={max}
         step={step}
-        value={value}
+        value={text}
         onChange={(event) => {
-          const next = event.currentTarget.valueAsNumber;
-          if (Number.isFinite(next) && next >= min && (max === undefined || next <= max)) {
+          setText(event.currentTarget.value);
+          const next = parseFloat(event.currentTarget.value);
+          if (
+            Number.isFinite(next) &&
+            next >= min &&
+            (max === undefined || next <= max)
+          ) {
             onChange(next);
           }
         }}
@@ -40,7 +53,11 @@ export function NumberField({
 }
 
 export function Result({ children }: { children: ReactNode }) {
-  return <div className="tool-result" aria-live="polite">{children}</div>;
+  return (
+    <div className="tool-result" aria-live="polite">
+      {children}
+    </div>
+  );
 }
 
 export function ToolLabel({ children }: { children: ReactNode }) {
@@ -51,10 +68,13 @@ export default function ToolShell({
   title,
   onReset,
   children,
+  wide = false,
 }: {
   title: string;
   onReset: () => void;
   children: ReactNode;
+  /** Use a single full-width column instead of the default two-column grid. */
+  wide?: boolean;
 }) {
   const [copyLinkMessage, setCopyLinkMessage] = useState("");
 
@@ -79,15 +99,36 @@ export default function ToolShell({
         <div>
           <p className="tool-workspace-kicker">ToolsAB · BROWSER WORKSPACE</p>
           <h2 className="tool-workspace-title">{title}</h2>
-          <p className="tool-workspace-caption">Adjust the inputs, review your result, and export when you are ready.</p>
+          <p className="tool-workspace-caption">
+            Adjust the inputs, review your result, and export when you are ready.
+          </p>
         </div>
         <div className="tool-workspace-actions">
-          <span className="tool-local-badge"><span aria-hidden="true">●</span> Runs locally</span>
-          <button type="button" className="tool-secondary-button" onClick={copyToolLink}>{copyLinkMessage || "Copy tool link"}</button>
-          <button type="button" className="tool-secondary-button" onClick={reset}>Reset</button>
+          <span className="tool-local-badge">
+            <span aria-hidden="true">●</span> Runs locally
+          </span>
+          <button
+            type="button"
+            className="tool-secondary-button"
+            onClick={copyToolLink}
+          >
+            {copyLinkMessage || "Copy tool link"}
+          </button>
+          <button
+            type="button"
+            className="tool-secondary-button"
+            onClick={reset}
+          >
+            Reset
+          </button>
         </div>
       </header>
-      <div className="tool-content-grid">{children}</div>
+      <div
+        className="tool-content-grid"
+        style={wide ? { gridTemplateColumns: "minmax(0, 1fr)" } : undefined}
+      >
+        {children}
+      </div>
     </section>
   );
 }
