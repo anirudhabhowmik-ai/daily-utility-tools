@@ -215,6 +215,7 @@ function daysUntil(deadline: string): number | null {
 
 export default function ScopeGuard() {
   const nextId = useRef(0);
+  const pdfRef = useRef<HTMLDivElement>(null);
 
   const [project, setProject] = useState<ProjectInfo>(DEFAULT_PROJECT);
   const [tasks, setTasks] = useState<ScopeItem[]>([]);
@@ -227,6 +228,7 @@ export default function ScopeGuard() {
   const [search, setSearch] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [showProjectDetails, setShowProjectDetails] = useState(true);
+  const [pdfBusy, setPdfBusy] = useState(false);
 
   /* ---------------------------------------------------------
      Load saved project (with light validation)
@@ -616,8 +618,44 @@ export default function ScopeGuard() {
     downloadFile("scope-items.csv", "\uFEFF" + csv, "text/csv");
   };
 
-  const printDocument = () => {
-    window.print();
+  const exportPdf = async () => {
+    if (!pdfRef.current || pdfBusy) return;
+    setPdfBusy(true);
+    try {
+      // Dynamic import: html2pdf.js touches `window`, so it must not load during SSR.
+      const html2pdf = (await import("html2pdf.js")).default;
+
+      const safeName =
+        (project.name || "scope-document")
+          .trim()
+          .replace(/[^\w\-]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .toLowerCase() || "scope-document";
+
+      // Loosely typed: some html2pdf.js typings omit `pagebreak`, though it works at runtime.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const options: any = {
+        margin: [10, 10, 12, 10], // top, left, bottom, right (mm)
+        filename: `${safeName}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          scrollX: 0,
+          scrollY: 0,
+        },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        pagebreak: { mode: ["css", "legacy"], avoid: [".pdf-item", ".pdf-heading"] },
+      };
+
+      await html2pdf().set(options).from(pdfRef.current).save();
+    } catch (err) {
+      console.error("PDF export failed:", err);
+      alert("Could not generate the PDF. Please try again.");
+    } finally {
+      setPdfBusy(false);
+    }
   };
 
   /* =========================================================
@@ -1176,10 +1214,10 @@ export default function ScopeGuard() {
                 <button
                   type="button"
                   className="sg-btn sg-btn-light"
-                  onClick={printDocument}
-                  disabled={tasks.length === 0}
+                  onClick={exportPdf}
+                  disabled={tasks.length === 0 || pdfBusy}
                 >
-                  🖨 Print / Save PDF
+                  {pdfBusy ? "Generating PDF…" : "↓ Download PDF"}
                 </button>
               </div>
             </section>
@@ -1192,6 +1230,186 @@ export default function ScopeGuard() {
               </div>
             </div>
           </aside>
+        </div>
+      </div>
+
+      {/* =====================================================
+          Hidden, off-screen report used only for PDF generation.
+          Uses inline styles + plain hex colors on purpose:
+          html2canvas can't reliably read styled-jsx or modern
+          CSS color functions.
+      ===================================================== */}
+      <div
+        aria-hidden="true"
+        style={{ position: "absolute", left: "-10000px", top: 0, width: "794px", pointerEvents: "none" }}
+      >
+        <div
+          ref={pdfRef}
+          style={{
+            width: "794px",
+            padding: "24px 28px",
+            background: "#ffffff",
+            color: "#172033",
+            fontFamily: "Arial, Helvetica, sans-serif",
+            fontSize: "12px",
+            lineHeight: 1.5,
+            boxSizing: "border-box",
+          }}
+        >
+          <div style={{ borderBottom: "3px solid #ff5a1f", paddingBottom: 12, marginBottom: 16 }}>
+            <div style={{ fontSize: 10, letterSpacing: 1.5, color: "#ff5a1f", fontWeight: 700 }}>
+              PROJECT SCOPE DOCUMENT
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 800, margin: "4px 0 8px" }}>
+              {project.name || "Untitled project"}
+            </div>
+            <table style={{ width: "100%", fontSize: 11, color: "#475467", borderCollapse: "collapse" }}>
+              <tbody>
+                <tr>
+                  <td style={{ padding: "2px 0" }}><b>Client:</b> {project.client || "Not specified"}</td>
+                  <td style={{ padding: "2px 0" }}><b>Owner:</b> {project.owner || "Not specified"}</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: "2px 0" }}><b>Type:</b> {project.projectType}</td>
+                  <td style={{ padding: "2px 0" }}><b>Deadline:</b> {project.deadline || "Not specified"}</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: "2px 0" }} colSpan={2}>
+                    <b>Generated:</b> {new Date().toLocaleString()}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 6, margin: "0 -6px 14px" }}>
+            <tbody>
+              <tr>
+                {[
+                  ["Total items", String(stats.count)],
+                  ["Agreed", String(stats.agreed)],
+                  ["Pending", String(stats.pending)],
+                  ["Completed", String(stats.completed)],
+                  ["Planned hours", formatHours(stats.plannedHours)],
+                ].map(([label, value]) => (
+                  <td
+                    key={label}
+                    style={{
+                      border: "1px solid #e7eaf0",
+                      background: "#f7f8fa",
+                      borderRadius: 6,
+                      padding: "8px 10px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <div style={{ fontSize: 9, color: "#778195", fontWeight: 700 }}>
+                      {label.toUpperCase()}
+                    </div>
+                    <div style={{ fontSize: 15, fontWeight: 800 }}>{value}</div>
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+
+          {SECTIONS.map((section) => {
+            const sectionTasks = tasks.filter((t) => t.section === section.id);
+            return (
+              <div key={section.id} style={{ marginBottom: 16 }}>
+                <div
+                  className="pdf-heading"
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 800,
+                    borderBottom: "1px solid #e7eaf0",
+                    paddingBottom: 4,
+                    marginBottom: 8,
+                  }}
+                >
+                  {section.label}{" "}
+                  <span style={{ color: "#9aa3b1", fontWeight: 600, fontSize: 11 }}>
+                    ({sectionTasks.length})
+                  </span>
+                </div>
+
+                {sectionTasks.length === 0 && (
+                  <div style={{ color: "#9aa3b1", fontStyle: "italic", fontSize: 11 }}>
+                    No items added.
+                  </div>
+                )}
+
+                {sectionTasks.map((item) => (
+                  <div
+                    key={item.id}
+                    className="pdf-item"
+                    style={{
+                      border: "1px solid #e7eaf0",
+                      borderLeft: `4px solid ${
+                        item.status === "agreed"
+                          ? "#3b9a65"
+                          : item.status === "completed"
+                          ? "#4779c5"
+                          : "#e0a526"
+                      }`,
+                      borderRadius: 6,
+                      padding: "8px 12px",
+                      marginBottom: 6,
+                      background: "#ffffff",
+                    }}
+                  >
+                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                      <tbody>
+                        <tr>
+                          <td style={{ fontSize: 13, fontWeight: 800, verticalAlign: "top" }}>
+                            {item.title}
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "right",
+                              fontSize: 10,
+                              fontWeight: 800,
+                              verticalAlign: "top",
+                              whiteSpace: "nowrap",
+                              color:
+                                item.status === "agreed"
+                                  ? "#247548"
+                                  : item.status === "completed"
+                                  ? "#2459a3"
+                                  : "#986313",
+                            }}
+                          >
+                            {statusLabel(item.status).toUpperCase()}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    {item.description && (
+                      <div style={{ fontSize: 11, color: "#475467", margin: "4px 0", whiteSpace: "pre-wrap" }}>
+                        {item.description}
+                      </div>
+                    )}
+                    <div style={{ fontSize: 10, color: "#778195" }}>
+                      Priority: <b style={{ textTransform: "capitalize" }}>{item.priority}</b>
+                      {"  |  "}Effort: <b>{formatHours(item.hours)}</b>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+          })}
+
+          <div
+            style={{
+              marginTop: 14,
+              paddingTop: 8,
+              borderTop: "1px solid #e7eaf0",
+              fontSize: 9,
+              color: "#9aa3b1",
+              textAlign: "center",
+            }}
+          >
+            Generated by Project Scope Guard Pro
+          </div>
         </div>
       </div>
 
@@ -2223,41 +2441,6 @@ export default function ScopeGuard() {
           color: #637469;
           font-size: 10px;
           line-height: 1.65;
-        }
-
-        /* Print Styles */
-        @media print {
-          .sg-no-print {
-            display: none !important;
-          }
-          .sg-layout {
-            display: block;
-          }
-          .sg-hero {
-            background: none;
-            color: #000;
-            border-bottom: 2px solid #000;
-            padding: 0 0 20px 0;
-            min-height: auto;
-          }
-          .sg-hero h2,
-          .sg-hero p,
-          .sg-eyebrow {
-            color: #000;
-          }
-          .sg-card {
-            border: none;
-            box-shadow: none;
-            padding: 0;
-            margin-bottom: 20px;
-          }
-          .sg-item {
-            border: 1px solid #ccc;
-            page-break-inside: avoid;
-          }
-          body {
-            background: #fff;
-          }
         }
 
         /* Responsive */
