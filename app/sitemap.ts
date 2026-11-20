@@ -1,6 +1,5 @@
 
 import type { MetadataRoute } from "next";
-import { ADDITIONAL_TOOLS } from "./tools/new-tools/config";
 
 const BASE_URL = "https://toolsab.com";
 
@@ -70,17 +69,11 @@ const standaloneTools = [
   "/tools/calligraphy-practice-sheet-generator",
 ];
 
-// Additional tools, excluding hidden tools
-const additionalToolPages = Object.keys(ADDITIONAL_TOOLS)
-  .filter((slug) => !HIDDEN_TOOL_SLUGS.has(slug))
-  .map((slug) => `/tools/${slug}`);
-
 export default function sitemap(): MetadataRoute.Sitemap {
   const allPages = [
     ...mainPages,
     // ...pdfPages,
     ...standaloneTools,
-    ...additionalToolPages,
   ];
 
   // Remove duplicate URLs
