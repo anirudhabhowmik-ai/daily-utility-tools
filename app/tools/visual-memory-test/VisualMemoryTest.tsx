@@ -56,6 +56,9 @@ export default function VisualMemoryTest() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [roundId, setRoundId] = useState(0);
 
+  const [showHelp, setShowHelp] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+
   const config = DIFFICULTIES[difficulty];
   const totalCells = config.rows * config.columns;
   const tileCount = Math.min(
@@ -65,14 +68,12 @@ export default function VisualMemoryTest() {
 
   const isPlaying = phase !== "ready" && phase !== "finished";
 
-  const progressText = useMemo(() => {
-    if (phase === "showing") return "Memorize the highlighted tiles";
-    if (phase === "answer") return "Select the tiles you remember";
-    if (phase === "success") return "Pattern remembered correctly!";
-    if (phase === "mistake") return "That pattern was not quite right";
-    if (phase === "finished") return "Game completed";
-    return "Ready to test your visual memory?";
-  }, [phase]);
+  const accuracy =
+    history.length > 0
+      ? Math.round(
+          (history.filter((entry) => entry.correct).length / history.length) * 100
+        )
+      : 0;
 
   // Load the saved best score.
   useEffect(() => {
@@ -83,7 +84,7 @@ export default function VisualMemoryTest() {
         setBestScore(parsed);
       }
     } catch {
-      // The game remains playable when browser storage is unavailable.
+      // Game remains playable if storage is unavailable.
     }
   }, []);
 
@@ -136,6 +137,7 @@ export default function VisualMemoryTest() {
     setHistory([]);
     setSelected([]);
     setPattern([]);
+    setShowHistory(false);
     startRound(1, difficulty);
   };
 
@@ -170,6 +172,7 @@ export default function VisualMemoryTest() {
           : "You have used all your lives."
       );
       setPhase(remainingLives > 0 ? "mistake" : "finished");
+      if (remainingLives <= 0) setShowHistory(true);
       return;
     }
 
@@ -209,90 +212,88 @@ export default function VisualMemoryTest() {
     setPhase("ready");
   };
 
-  const accuracy =
-    history.length > 0
-      ? Math.round(
-          (history.filter((entry) => entry.correct).length / history.length) * 100
-        )
-      : 0;
+  const phaseLabel =
+    phase === "showing"
+      ? "MEMORIZE"
+      : phase === "answer"
+        ? "YOUR TURN"
+        : phase === "success"
+          ? "CORRECT"
+          : phase === "mistake"
+            ? "TRY AGAIN"
+            : phase === "finished"
+              ? "GAME OVER"
+              : "READY";
+
+  const displayMessage =
+    phase === "ready"
+      ? "Choose a difficulty below and start when you're ready."
+      : phase === "showing"
+        ? "Memorize the highlighted tiles."
+        : phase === "answer"
+          ? "Select every highlighted tile. Avoid selecting any extra tile."
+          : roundMessage;
 
   return (
     <ToolShell title="Visual Memory Test" onReset={resetGame} wide>
       <div className="vmt">
         {/* HEADER */}
-        <div className="vmt-header">
-          <div className="vmt-header-text">
-            <div className="vmt-eyebrow">BRAIN TRAINING · PRO</div>
-            <h1>Visual Memory Test</h1>
-            <p className="vmt-intro">
-              Memorize the highlighted tiles, then recreate the pattern from
-              memory. How far can you go?
-            </p>
+        <header className="vmt-head">
+          <div className="vmt-head-text">
+            <span className="vmt-eyebrow">BRAIN TRAINING · PRO</span>
+            <h2>Visual Memory Test</h2>
           </div>
-
-          <div className="vmt-header-mark" aria-hidden="true">
-            <span>▦</span>
+          <div className="vmt-best">
+            <span className="vmt-best-label">BEST</span>
+            <strong className="vmt-best-value">{bestScore}</strong>
           </div>
-        </div>
+        </header>
 
-        {/* STATS */}
-        <div className="vmt-stats">
-          <div className="vmt-stat">
-            <span className="vmt-stat-label">SCORE</span>
+        {/* STAT BAR */}
+        <div className="vmt-bar">
+          <div className="vmt-bar-cell">
+            <span>SCORE</span>
             <strong>{score}</strong>
           </div>
-          <div className="vmt-stat">
-            <span className="vmt-stat-label">BEST SCORE</span>
-            <strong>{bestScore}</strong>
-          </div>
-          <div className="vmt-stat">
-            <span className="vmt-stat-label">LEVEL</span>
+          <div className="vmt-bar-sep" />
+          <div className="vmt-bar-cell">
+            <span>LEVEL</span>
             <strong>{level}</strong>
           </div>
-          <div className="vmt-stat">
-            <span className="vmt-stat-label">LIVES</span>
-            <strong
-              className="vmt-lives"
-              aria-label={`${lives} lives remaining`}
-            >
-              {"♥".repeat(lives)}
-              <span>{"♡".repeat(3 - lives)}</span>
+          <div className="vmt-bar-sep" />
+          <div className="vmt-bar-cell">
+            <span>TILES</span>
+            <strong>{tileCount}</strong>
+          </div>
+          <div className="vmt-bar-sep" />
+          <div className="vmt-bar-cell">
+            <span>LIVES</span>
+            <strong className="vmt-hearts">
+              {Array.from({ length: 3 }, (_, i) => (
+                <span
+                  key={i}
+                  className={i < lives ? "vmt-heart on" : "vmt-heart"}
+                  aria-hidden="true"
+                >
+                  ♥
+                </span>
+              ))}
             </strong>
           </div>
         </div>
 
-        {/* GAME CARD */}
-        <div className="vmt-game-card">
-          <div className="vmt-game-top">
-            <div>
-              <span className="vmt-level-label">LEVEL {level}</span>
-              <h2>{progressText}</h2>
-            </div>
-
-            <div className="vmt-game-badges">
-              {streak > 0 && (
-                <span className="vmt-streak-badge">🔥 {streak} streak</span>
-              )}
-              <span
-                className={`vmt-phase-badge vmt-phase-${phase}`}
-                aria-live="polite"
-              >
-                {phase === "showing"
-                  ? "MEMORIZE"
-                  : phase === "answer"
-                    ? "YOUR TURN"
-                    : phase === "success"
-                      ? "CORRECT"
-                      : phase === "mistake"
-                        ? "TRY AGAIN"
-                        : phase === "finished"
-                          ? "FINISHED"
-                          : "READY"}
-              </span>
-            </div>
+        {/* STAGE */}
+        <div className="vmt-stage">
+          <div className="vmt-stage-top">
+            <span className={`vmt-pill vmt-pill-${phase}`}>
+              <span className="vmt-pill-dot" />
+              {phaseLabel}
+            </span>
+            {streak > 0 && (
+              <span className="vmt-pill vmt-pill-streak">🔥 {streak}</span>
+            )}
           </div>
 
-          {/* COUNTDOWN BAR DURING SHOWING */}
           {phase === "showing" && (
             <div
               className="vmt-countdown-track"
@@ -306,249 +307,269 @@ export default function VisualMemoryTest() {
             </div>
           )}
 
-          {/* BOARD */}
-          <div className="vmt-board-wrap">
-            <div
-              className={`vmt-board vmt-board-${difficulty}`}
-              style={
-                { "--vmt-columns": config.columns } as React.CSSProperties
-              }
-              role="group"
-              aria-label={`${config.rows} by ${config.columns} visual memory grid`}
-            >
-              {Array.from({ length: totalCells }, (_, index) => {
-                const isPatternTile = pattern.includes(index);
-                const isSelected = selected.includes(index);
-                const revealPattern = phase === "showing";
-                const revealAnswer =
-                  phase === "success" ||
-                  phase === "mistake" ||
-                  phase === "finished";
+          <div
+            className="vmt-board"
+            style={{
+              gridTemplateColumns: `repeat(${config.columns}, minmax(0, 1fr))`,
+            }}
+            role="group"
+            aria-label={`${config.rows} by ${config.columns} visual memory grid`}
+          >
+            {Array.from({ length: totalCells }, (_, index) => {
+              const isPatternTile = pattern.includes(index);
+              const isSelected = selected.includes(index);
+              const revealPattern = phase === "showing";
+              const revealAnswer =
+                phase === "success" ||
+                phase === "mistake" ||
+                phase === "finished";
 
-                const isRevealed =
-                  (revealPattern && isPatternTile) ||
-                  (revealAnswer && isPatternTile) ||
-                  isSelected;
+              const isRevealed =
+                (revealPattern && isPatternTile) ||
+                (revealAnswer && isPatternTile) ||
+                isSelected;
 
-                return (
-                  <button
-                    key={index}
-                    type="button"
-                    className={[
-                      "vmt-tile",
-                      isRevealed ? "is-revealed" : "",
-                      isSelected ? "is-selected" : "",
-                      revealAnswer && isPatternTile ? "is-answer" : "",
-                      revealAnswer &&
-                      !isPatternTile &&
-                      selected.includes(index)
-                        ? "is-wrong"
-                        : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    onClick={() => handleTileClick(index)}
-                    disabled={phase !== "answer" || isSelected}
-                    aria-label={`Grid tile ${index + 1}${
-                      isRevealed ? ", highlighted" : ""
-                    }`}
-                    aria-pressed={isSelected}
-                  >
-                    {isRevealed ? <span aria-hidden="true">✦</span> : null}
-                  </button>
-                );
-              })}
-            </div>
+              return (
+                <button
+                  key={index}
+                  type="button"
+                  className={[
+                    "vmt-tile",
+                    isRevealed ? "is-revealed" : "",
+                    isSelected ? "is-selected" : "",
+                    revealAnswer && isPatternTile ? "is-answer" : "",
+                    revealAnswer && !isPatternTile && selected.includes(index)
+                      ? "is-wrong"
+                      : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  onClick={() => handleTileClick(index)}
+                  disabled={phase !== "answer" || isSelected}
+                  aria-label={`Grid tile ${index + 1}${
+                    isRevealed ? ", highlighted" : ""
+                  }`}
+                  aria-pressed={isSelected}
+                >
+                  {isRevealed ? <span aria-hidden="true">✦</span> : null}
+                </button>
+              );
+            })}
           </div>
 
-          {/* PROGRESS */}
-          <div className="vmt-progress-row">
-            <span>
-              {phase === "showing"
-                ? "Look carefully..."
-                : phase === "answer"
-                  ? `${selected.length} of ${pattern.length} tiles selected`
-                  : phase === "success"
-                    ? "Level completed"
-                    : phase === "mistake"
-                      ? "One life used"
-                      : phase === "finished"
-                        ? "Your final result"
-                        : `${tileCount} tiles to memorize`}
-            </span>
-
-            {phase === "answer" && (
-              <span className="vmt-progress-count">
-                {selected.length}/{pattern.length}
-              </span>
-            )}
-          </div>
-
-          {phase === "answer" && (
-            <div
-              className="vmt-progress-track"
-              role="progressbar"
-              aria-label="Pattern selection progress"
-              aria-valuemin={0}
-              aria-valuemax={pattern.length}
-              aria-valuenow={selected.length}
-            >
-              <div
-                className="vmt-progress-fill"
-                style={{
-                  width: `${(selected.length / pattern.length) * 100}%`,
-                }}
-              />
+          {(phase === "showing" || phase === "answer" || phase === "ready") && (
+            <div className="vmt-stage-info">
+              {phase === "showing" && (
+                <span className="vmt-stage-hint">
+                  Look carefully — the pattern will hide shortly.
+                </span>
+              )}
+              {phase === "answer" && (
+                <div className="vmt-progress-wrap">
+                  <div className="vmt-progress-label">
+                    <span>Selected</span>
+                    <strong>
+                      {selected.length} / {pattern.length}
+                    </strong>
+                  </div>
+                  <div className="vmt-progress-track">
+                    <div
+                      className="vmt-progress-fill"
+                      style={{
+                        width: `${(selected.length / pattern.length) * 100}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+              {phase === "ready" && (
+                <span className="vmt-stage-hint">
+                  {tileCount} tiles to memorize · {config.rows} ×{" "}
+                  {config.columns} grid
+                </span>
+              )}
             </div>
           )}
+        </div>
 
-          {/* FEEDBACK */}
-          {(phase === "success" ||
-            phase === "mistake" ||
-            phase === "finished") && (
-            <div
-              className={`vmt-feedback ${
-                phase === "success" ? "is-success" : "is-error"
-              }`}
-              role="status"
-            >
-              <strong>
-                {phase === "success"
-                  ? "Excellent!"
-                  : phase === "finished"
-                    ? "Game over"
-                    : "Not quite!"}
-              </strong>
-              <span>{roundMessage}</span>
+        {/* ACTION ROW */}
+        <div className="vmt-action">
+          <div
+            className={`vmt-msg vmt-msg-${phase}`}
+            role="status"
+            aria-live="polite"
+          >
+            <span className="vmt-msg-icon">
+              {phase === "success"
+                ? "✓"
+                : phase === "mistake" || phase === "finished"
+                  ? "!"
+                  : phase === "showing"
+                    ? "◉"
+                    : phase === "answer"
+                      ? "↗"
+                      : "◆"}
+            </span>
+            <div className="vmt-msg-content">
+              <span>{displayMessage}</span>
               {phase === "finished" && history.length > 0 && (
-                <span className="vmt-feedback-meta">
+                <span className="vmt-msg-meta">
                   Accuracy: {accuracy}% · {history.length}{" "}
                   {history.length === 1 ? "round" : "rounds"} played
                 </span>
               )}
             </div>
-          )}
+          </div>
 
-          {/* ACTIONS */}
-          <div className="vmt-actions">
+          <div className="vmt-action-btns">
+            {phase !== "ready" && (
+              <button
+                type="button"
+                className="vmt-btn vmt-btn-sec"
+                onClick={resetGame}
+              >
+                Reset
+              </button>
+            )}
+
             {phase === "ready" && (
               <button
                 type="button"
-                className="vmt-primary-btn"
+                className="vmt-btn vmt-btn-pri"
                 onClick={startGame}
               >
-                Start game <span aria-hidden="true">→</span>
+                Start <span aria-hidden="true">→</span>
               </button>
             )}
 
             {phase === "success" && (
               <button
                 type="button"
-                className="vmt-primary-btn"
+                className="vmt-btn vmt-btn-pri"
                 onClick={nextLevel}
               >
-                Continue to level {level + 1}{" "}
-                <span aria-hidden="true">→</span>
+                Continue <span aria-hidden="true">→</span>
               </button>
             )}
 
             {phase === "mistake" && (
               <button
                 type="button"
-                className="vmt-primary-btn"
+                className="vmt-btn vmt-btn-pri"
                 onClick={retryLevel}
               >
-                Retry this level <span aria-hidden="true">↻</span>
+                Retry <span aria-hidden="true">↻</span>
               </button>
             )}
 
             {phase === "finished" && (
               <button
                 type="button"
-                className="vmt-primary-btn"
+                className="vmt-btn vmt-btn-pri"
                 onClick={startGame}
               >
                 Play again <span aria-hidden="true">↻</span>
               </button>
             )}
-
-            {phase !== "ready" && (
-              <button
-                type="button"
-                className="vmt-secondary-btn"
-                onClick={resetGame}
-              >
-                Reset game
-              </button>
-            )}
           </div>
-
-          <p className="vmt-game-note">
-            {phase === "showing"
-              ? "The highlighted tiles will disappear shortly."
-              : phase === "answer"
-                ? "Select every highlighted tile. Avoid selecting any extra tile."
-                : phase === "ready"
-                  ? "Choose a difficulty below and start when you are ready."
-                  : "Your best score is saved in this browser."}
-          </p>
         </div>
 
-        {/* DIFFICULTY */}
-        <section className="vmt-settings">
-          <div>
-            <h2>Choose your difficulty</h2>
-            <p>
-              Higher difficulty means a larger grid and more tiles to remember.
-            </p>
+        {/* DIFFICULTY STRIP */}
+        <div className="vmt-diff-strip" role="group" aria-label="Difficulty">
+          {(["easy", "medium", "hard"] as Difficulty[]).map((option) => (
+            <button
+              key={option}
+              type="button"
+              className={`vmt-diff-btn ${
+                difficulty === option ? "is-active" : ""
+              }`}
+              onClick={() => changeDifficulty(option)}
+              disabled={isPlaying}
+              aria-pressed={difficulty === option}
+            >
+              <span className="vmt-diff-name">
+                {DIFFICULTIES[option].label}
+              </span>
+              <span className="vmt-diff-meta">
+                {DIFFICULTIES[option].rows}×{DIFFICULTIES[option].columns} ·{" "}
+                {(DIFFICULTIES[option].displayTime / 1000).toFixed(1)}s
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* EXPANDABLE: HOW TO PLAY */}
+        <button
+          type="button"
+          className="vmt-expand"
+          onClick={() => setShowHelp((v) => !v)}
+          aria-expanded={showHelp}
+        >
+          <span>How to play</span>
+          <span className="vmt-expand-chev">{showHelp ? "−" : "+"}</span>
+        </button>
+
+        {showHelp && (
+          <div className="vmt-panel">
+            <div className="vmt-step">
+              <span>01</span>
+              <div>
+                <strong>Study the pattern</strong>
+                <p>
+                  A group of squares lights up briefly. Note their positions on
+                  the grid.
+                </p>
+              </div>
+            </div>
+            <div className="vmt-step">
+              <span>02</span>
+              <div>
+                <strong>Remember the positions</strong>
+                <p>
+                  The highlighted squares disappear. Try to remember where each
+                  one appeared.
+                </p>
+              </div>
+            </div>
+            <div className="vmt-step">
+              <span>03</span>
+              <div>
+                <strong>Recreate the pattern</strong>
+                <p>
+                  Select all the correct squares. Complete levels to increase
+                  your score.
+                </p>
+              </div>
+            </div>
           </div>
+        )}
 
-          <div className="vmt-difficulty-options">
-            {(["easy", "medium", "hard"] as Difficulty[]).map((option) => (
-              <button
-                key={option}
-                type="button"
-                className={`vmt-difficulty-btn ${
-                  difficulty === option ? "is-active" : ""
-                }`}
-                onClick={() => changeDifficulty(option)}
-                disabled={isPlaying}
-                aria-pressed={difficulty === option}
-              >
-                <strong>{DIFFICULTIES[option].label}</strong>
-                <span>
-                  {DIFFICULTIES[option].rows} × {DIFFICULTIES[option].columns}{" "}
-                  grid
-                </span>
-              </button>
-            ))}
-          </div>
-
-          {isPlaying && (
-            <p className="vmt-settings-note">
-              Finish or reset your current game to change difficulty.
-            </p>
-          )}
-        </section>
-
-        {/* HISTORY */}
+        {/* EXPANDABLE: HISTORY */}
         {history.length > 0 && (
-          <section className="vmt-history">
-            <div className="vmt-history-heading">
-              <h2>Round history</h2>
-              <span className="vmt-history-summary">
-                {accuracy}% accuracy · {history.length}{" "}
+          <>
+            <button
+              type="button"
+              className="vmt-expand"
+              onClick={() => setShowHistory((v) => !v)}
+              aria-expanded={showHistory}
+            >
+              <span>
+                Round history · {accuracy}% accuracy · {history.length}{" "}
                 {history.length === 1 ? "round" : "rounds"}
               </span>
-            </div>
-            <div className="vmt-history-list">
-              {history.map((entry, index) => (
-                <div className="vmt-history-item" key={index}>
-                  <span>Level {entry.level}</span>
-                  <div className="vmt-history-meta">
-                    <span className="vmt-history-tiles">
-                      {entry.tiles} tiles
-                    </span>
+              <span className="vmt-expand-chev">
+                {showHistory ? "−" : "+"}
+              </span>
+            </button>
+
+            {showHistory && (
+              <div className="vmt-panel vmt-panel-history">
+                {history.map((entry, index) => (
+                  <div className="vmt-history-row" key={index}>
+                    <div className="vmt-history-level">
+                      <span>Level {entry.level}</span>
+                      <small>{entry.tiles} tiles</small>
+                    </div>
                     <span
                       className={`vmt-history-status ${
                         entry.correct ? "is-correct" : "is-wrong"
@@ -557,49 +578,15 @@ export default function VisualMemoryTest() {
                       {entry.correct ? "Correct" : "Wrong"}
                     </span>
                   </div>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+            )}
+          </>
         )}
 
-        {/* HOW TO PLAY */}
-        <section className="vmt-how">
-          <h2>How to play the Visual Memory Test</h2>
-
-          <div className="vmt-how-grid">
-            <article>
-              <span className="vmt-step-number">01</span>
-              <h3>Study the pattern</h3>
-              <p>
-                A group of squares lights up briefly. Pay attention to their
-                positions on the grid.
-              </p>
-            </article>
-
-            <article>
-              <span className="vmt-step-number">02</span>
-              <h3>Remember the positions</h3>
-              <p>
-                The highlighted squares disappear. Try to remember exactly
-                where each one appeared.
-              </p>
-            </article>
-
-            <article>
-              <span className="vmt-step-number">03</span>
-              <h3>Recreate the pattern</h3>
-              <p>
-                Select all the correct squares. Complete levels to increase
-                your score and challenge your memory.
-              </p>
-            </article>
-          </div>
-        </section>
-
-        {/* TIPS */}
+        {/* TIPS (static, below fold) */}
         <section className="vmt-tips">
-          <h2>Tips to improve your visual memory</h2>
+          <h3>Tips to improve your visual memory</h3>
           <ul>
             <li>
               <strong>Group nearby squares:</strong> Remember tiles as small
@@ -620,9 +607,9 @@ export default function VisualMemoryTest() {
           </ul>
         </section>
 
-        {/* FAQ */}
+        {/* FAQ (static, below fold) */}
         <section className="vmt-faq">
-          <h2>Frequently asked questions</h2>
+          <h3>Frequently asked questions</h3>
 
           <details>
             <summary>What is a Visual Memory Test?</summary>
@@ -692,189 +679,219 @@ export default function VisualMemoryTest() {
           --vmt-border: var(--border-color, #e8ebf1);
           --vmt-surface: var(--card-bg, #ffffff);
           --vmt-soft: #fafbfc;
-          width: 100%;
-          max-width: 100%;
+
           color: var(--vmt-text);
+          width: 100%;
+          max-width: 560px;
+          margin: 0 auto;
         }
 
         /* =========================================
            HEADER
         ========================================= */
-        .vmt-header {
+        .vmt-head {
           display: flex;
           justify-content: space-between;
-          align-items: flex-start;
-          gap: 20px;
-          margin-bottom: 26px;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 12px;
         }
 
-        .vmt-header-text {
+        .vmt-head-text {
           min-width: 0;
         }
 
         .vmt-eyebrow {
-          margin-bottom: 9px;
-          color: var(--vmt-primary);
-          font-size: 11px;
-          font-weight: 800;
-          letter-spacing: 0.13em;
-        }
-
-        .vmt-header h1 {
-          margin: 0;
-          font-size: clamp(28px, 4vw, 39px);
-          line-height: 1.15;
-          letter-spacing: -0.055em;
-          font-weight: 800;
-          color: var(--vmt-text);
-        }
-
-        .vmt-intro {
-          max-width: 610px;
-          margin: 11px 0 0;
-          color: var(--vmt-muted);
-          font-size: 14px;
-          line-height: 1.7;
-        }
-
-        .vmt-header-mark {
-          display: grid;
-          place-items: center;
-          width: 68px;
-          height: 68px;
-          flex-shrink: 0;
-          border-radius: 20px;
-          background: linear-gradient(145deg, #fff3ed, #fffaf7);
-          color: var(--vmt-primary);
-          font-size: 36px;
-        }
-
-        /* =========================================
-           STATS
-        ========================================= */
-        .vmt-stats {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 12px;
-          margin-bottom: 18px;
-        }
-
-        .vmt-stat {
-          min-width: 0;
-          padding: 15px 17px;
-          border: 1px solid var(--vmt-border);
-          border-radius: 14px;
-          background: var(--vmt-surface);
-        }
-
-        .vmt-stat-label {
           display: block;
-          margin-bottom: 7px;
-          color: var(--vmt-muted);
+          color: var(--vmt-primary);
           font-size: 10px;
           font-weight: 800;
-          letter-spacing: 0.09em;
+          letter-spacing: 1.2px;
+          margin-bottom: 3px;
         }
 
-        .vmt-stat strong {
-          display: block;
-          font-size: 23px;
+        .vmt-head h2 {
+          font-size: 20px;
           font-weight: 800;
-          letter-spacing: -0.04em;
+          letter-spacing: -0.5px;
+          line-height: 1.2;
+          margin: 0;
+        }
+
+        .vmt-best {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 1px;
+          padding: 8px 12px;
+          border: 1px solid var(--vmt-border);
+          border-radius: 10px;
+          background: linear-gradient(145deg, #fff3ed, #fffaf7);
+        }
+
+        .vmt-best-label {
+          font-size: 8px;
+          font-weight: 800;
+          color: var(--vmt-muted);
+          letter-spacing: 1px;
+        }
+
+        .vmt-best-value {
+          font-size: 17px;
+          font-weight: 800;
+          color: var(--vmt-primary);
+          line-height: 1.1;
           font-variant-numeric: tabular-nums;
-          color: var(--vmt-text);
-        }
-
-        .vmt-stat .vmt-lives {
-          color: #e34d70;
-          font-size: 18px;
-          letter-spacing: 2px;
-          white-space: nowrap;
-        }
-
-        .vmt-lives span {
-          color: #d9dbe4;
         }
 
         /* =========================================
-           GAME CARD
+           STAT BAR
         ========================================= */
-        .vmt-game-card {
-          padding: 24px;
+        .vmt-bar {
+          display: flex;
+          align-items: stretch;
           border: 1px solid var(--vmt-border);
-          border-radius: 20px;
+          border-radius: 11px;
           background: var(--vmt-surface);
-          box-shadow: 0 12px 40px rgba(23, 32, 51, 0.06);
+          overflow: hidden;
+          margin-bottom: 12px;
         }
 
-        .vmt-game-top {
+        .vmt-bar-cell {
+          flex: 1;
+          min-width: 0;
+          padding: 9px 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+        }
+
+        .vmt-bar-cell > span {
+          font-size: 8px;
+          font-weight: 800;
+          color: var(--vmt-muted);
+          letter-spacing: 0.9px;
+        }
+
+        .vmt-bar-cell strong {
+          font-size: 15px;
+          font-weight: 800;
+          line-height: 1.1;
+          font-variant-numeric: tabular-nums;
+        }
+
+        .vmt-bar-sep {
+          width: 1px;
+          background: var(--vmt-border);
+          flex-shrink: 0;
+        }
+
+        .vmt-hearts {
+          display: flex;
+          gap: 2px;
+        }
+
+        .vmt-heart {
+          color: #d9dbe4;
+          font-size: 13px;
+        }
+
+        .vmt-heart.on {
+          color: #e34d70;
+        }
+
+        /* =========================================
+           STAGE
+        ========================================= */
+        .vmt-stage {
+          position: relative;
+          padding: 14px;
+          border: 1px solid var(--vmt-border);
+          border-radius: 16px;
+          background: radial-gradient(
+            circle at 50% 30%,
+            #ffffff 0%,
+            #fafbfc 75%
+          );
+          box-shadow: 0 6px 20px rgba(23, 32, 51, 0.05);
+        }
+
+        .vmt-stage-top {
           display: flex;
           justify-content: space-between;
-          align-items: flex-start;
-          gap: 15px;
-        }
-
-        .vmt-level-label {
-          color: var(--vmt-primary);
-          font-size: 10px;
-          font-weight: 800;
-          letter-spacing: 0.12em;
-        }
-
-        .vmt-game-top h2 {
-          margin: 7px 0 0;
-          font-size: 19px;
-          line-height: 1.35;
-          font-weight: 750;
-          letter-spacing: -0.035em;
-          color: var(--vmt-text);
-        }
-
-        .vmt-game-badges {
-          display: flex;
-          flex-wrap: wrap;
           align-items: center;
           gap: 8px;
-          flex-shrink: 0;
+          margin-bottom: 10px;
         }
 
-        .vmt-phase-badge {
-          padding: 7px 10px;
+        .vmt-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 5px 9px;
           border-radius: 999px;
+          font-size: 9px;
+          font-weight: 800;
+          letter-spacing: 0.5px;
+          white-space: nowrap;
           background: var(--vmt-primary-soft);
           color: var(--vmt-primary);
-          font-size: 9px;
-          font-weight: 850;
-          letter-spacing: 0.07em;
-          white-space: nowrap;
         }
 
-        .vmt-phase-success {
+        .vmt-pill-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: var(--vmt-primary);
+          box-shadow: 0 0 0 2px rgba(255, 90, 31, 0.15);
+        }
+
+        .vmt-pill-showing {
+          background: var(--vmt-primary-soft);
+          color: var(--vmt-primary);
+        }
+
+        .vmt-pill-answer {
           background: #ecfdf5;
           color: #15803d;
         }
 
-        .vmt-phase-mistake,
-        .vmt-phase-finished {
+        .vmt-pill-answer .vmt-pill-dot {
+          background: #16a34a;
+          box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
+        }
+
+        .vmt-pill-success {
+          background: #ecfdf5;
+          color: #15803d;
+        }
+
+        .vmt-pill-success .vmt-pill-dot {
+          background: #16a34a;
+          box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
+        }
+
+        .vmt-pill-mistake,
+        .vmt-pill-finished {
           background: #fef2f2;
           color: #b42318;
         }
 
-        .vmt-streak-badge {
-          padding: 7px 10px;
-          border-radius: 999px;
+        .vmt-pill-mistake .vmt-pill-dot,
+        .vmt-pill-finished .vmt-pill-dot {
+          background: #ef4444;
+          box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
+        }
+
+        .vmt-pill-streak {
           background: #fef3c7;
           color: #b45309;
-          font-size: 10px;
-          font-weight: 800;
-          letter-spacing: 0.02em;
-          white-space: nowrap;
         }
 
         /* Countdown bar */
         .vmt-countdown-track {
           height: 5px;
-          margin-top: 14px;
+          margin-bottom: 10px;
           overflow: hidden;
           border-radius: 99px;
           background: #f3f4f6;
@@ -897,25 +914,14 @@ export default function VisualMemoryTest() {
           }
         }
 
-        /* =========================================
-           BOARD
-        ========================================= */
-        .vmt-board-wrap {
-          display: grid;
-          place-items: center;
-          margin: 24px 0 18px;
-          padding: 22px 12px;
-          border: 1px solid #f1f2f6;
-          border-radius: 17px;
-          background: radial-gradient(circle at 50% 45%, #ffffff 0%, #fafbfc 75%);
-        }
-
+        /* BOARD */
         .vmt-board {
           display: grid;
-          grid-template-columns: repeat(var(--vmt-columns), minmax(0, 1fr));
-          gap: 9px;
-          width: min(100%, 350px);
+          gap: 8px;
+          width: 100%;
+          max-width: min(340px, 40vh);
           aspect-ratio: 1;
+          margin: 0 auto;
         }
 
         .vmt-tile {
@@ -927,13 +933,14 @@ export default function VisualMemoryTest() {
           border-radius: 11px;
           background: #f0f1f7;
           color: white;
-          font-size: clamp(16px, 3vw, 24px);
+          font-size: clamp(14px, 2.4vw, 22px);
           cursor: default;
           transition:
             background 0.15s ease,
             border-color 0.15s ease,
             transform 0.15s ease,
             box-shadow 0.15s ease;
+          -webkit-tap-highlight-color: transparent;
         }
 
         .vmt-tile:disabled {
@@ -948,6 +955,11 @@ export default function VisualMemoryTest() {
           border-color: var(--vmt-primary-hover);
           background: var(--vmt-primary-surface);
           transform: scale(0.96);
+        }
+
+        .vmt-tile:focus-visible {
+          outline: 3px solid var(--vmt-primary-hover);
+          outline-offset: 3px;
         }
 
         .vmt-tile.is-revealed:not(.is-answer) {
@@ -985,30 +997,45 @@ export default function VisualMemoryTest() {
           background: #dc5367;
         }
 
-        /* =========================================
-           PROGRESS
-        ========================================= */
-        .vmt-progress-row {
+        /* Stage info row */
+        .vmt-stage-info {
+          margin-top: 10px;
+          min-height: 28px;
+        }
+
+        .vmt-stage-hint {
+          display: block;
+          text-align: center;
+          color: var(--vmt-muted);
+          font-size: 10px;
+          font-weight: 600;
+        }
+
+        .vmt-progress-wrap {
           display: flex;
-          align-items: center;
+          flex-direction: column;
+          gap: 5px;
+        }
+
+        .vmt-progress-label {
+          display: flex;
           justify-content: space-between;
           gap: 10px;
           color: var(--vmt-muted);
-          font-size: 12px;
+          font-size: 9px;
+          font-weight: 700;
         }
 
-        .vmt-progress-count {
-          color: var(--vmt-primary);
-          font-weight: 800;
+        .vmt-progress-label strong {
+          color: var(--vmt-text);
           font-variant-numeric: tabular-nums;
         }
 
         .vmt-progress-track {
-          height: 7px;
-          margin-top: 10px;
-          overflow: hidden;
+          height: 5px;
           border-radius: 99px;
           background: #eeeff5;
+          overflow: hidden;
         }
 
         .vmt-progress-fill {
@@ -1019,236 +1046,320 @@ export default function VisualMemoryTest() {
         }
 
         /* =========================================
-           FEEDBACK
+           ACTION ROW
         ========================================= */
-        .vmt-feedback {
+        .vmt-action {
+          display: flex;
+          align-items: stretch;
+          gap: 8px;
+          margin-top: 10px;
+        }
+
+        .vmt-msg {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 9px 11px;
+          border-radius: 9px;
+          background: var(--vmt-soft);
+          color: var(--vmt-muted);
+          font-size: 11px;
+          font-weight: 600;
+          line-height: 1.4;
+          min-height: 40px;
+          min-width: 0;
+        }
+
+        .vmt-msg-icon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 18px;
+          height: 18px;
+          flex: 0 0 18px;
+          border-radius: 50%;
+          background: #e2e8f0;
+          color: #475569;
+          font-size: 10px;
+          font-weight: 900;
+        }
+
+        .vmt-msg-content {
           display: flex;
           flex-direction: column;
-          gap: 4px;
-          margin-top: 17px;
-          padding: 13px 15px;
-          border-radius: 12px;
-          font-size: 13px;
-          line-height: 1.5;
+          gap: 2px;
+          min-width: 0;
+          flex: 1;
         }
 
-        .vmt-feedback.is-success {
-          background: #eaf8f0;
-          color: #18794a;
-        }
-
-        .vmt-feedback.is-error {
-          background: #fff0f1;
-          color: #bd3e52;
-        }
-
-        .vmt-feedback strong {
-          font-size: 14px;
-        }
-
-        .vmt-feedback-meta {
-          margin-top: 4px;
-          font-size: 12px;
+        .vmt-msg-meta {
+          color: var(--vmt-muted);
+          font-size: 10px;
           opacity: 0.85;
         }
 
-        /* =========================================
-           ACTIONS
-        ========================================= */
-        .vmt-actions {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-          margin-top: 20px;
+        .vmt-msg-success {
+          background: #ecfdf5;
+          color: #166534;
         }
 
-        .vmt-primary-btn,
-        .vmt-secondary-btn {
+        .vmt-msg-success .vmt-msg-icon {
+          background: #dcfce7;
+          color: #15803d;
+        }
+
+        .vmt-msg-mistake,
+        .vmt-msg-finished {
+          background: #fef2f2;
+          color: #b91c1c;
+        }
+
+        .vmt-msg-mistake .vmt-msg-icon,
+        .vmt-msg-finished .vmt-msg-icon {
+          background: #fee2e2;
+          color: #dc2626;
+        }
+
+        .vmt-action-btns {
+          display: flex;
+          gap: 6px;
+          flex-shrink: 0;
+        }
+
+        .vmt-btn {
+          min-height: 40px;
+          padding: 0 14px;
+          border-radius: 9px;
           display: inline-flex;
           justify-content: center;
           align-items: center;
-          gap: 9px;
-          min-height: 45px;
-          padding: 0 19px;
-          border-radius: 11px;
-          font-size: 13px;
-          font-weight: 750;
+          gap: 6px;
+          font-size: 12px;
+          font-weight: 800;
           cursor: pointer;
           transition:
-            transform 0.18s ease,
-            background 0.18s ease,
-            box-shadow 0.18s ease;
+            background 150ms ease,
+            transform 150ms ease,
+            box-shadow 150ms ease,
+            border-color 150ms ease,
+            color 150ms ease;
+          white-space: nowrap;
         }
 
-        .vmt-primary-btn {
+        .vmt-btn:focus-visible {
+          outline: 3px solid var(--vmt-primary-hover);
+          outline-offset: 3px;
+        }
+
+        .vmt-btn-pri {
           border: 1px solid #e74e1b;
           background: linear-gradient(135deg, #ff682f, #e94b18);
-          color: white;
-          box-shadow: 0 4px 12px rgba(255, 90, 31, 0.2);
+          color: #fff;
+          box-shadow: 0 3px 10px rgba(255, 90, 31, 0.2);
         }
 
-        .vmt-primary-btn:hover {
-          transform: translateY(-2px);
+        .vmt-btn-pri:hover {
           background: linear-gradient(135deg, #f45a25, #d94112);
-          box-shadow: 0 7px 17px rgba(255, 90, 31, 0.27);
+          transform: translateY(-1px);
+          box-shadow: 0 6px 14px rgba(255, 90, 31, 0.28);
         }
 
-        .vmt-secondary-btn {
+        .vmt-btn-sec {
           border: 1px solid var(--vmt-border);
-          background: white;
+          background: #fff;
           color: #4e5261;
         }
 
-        .vmt-secondary-btn:hover {
-          background: #f7f7fb;
-        }
-
-        .vmt-game-note {
-          margin: 15px 0 0;
-          color: var(--vmt-muted);
-          font-size: 11px;
-          line-height: 1.6;
+        .vmt-btn-sec:hover {
+          border-color: var(--vmt-primary-hover);
+          color: var(--vmt-primary);
+          background: var(--vmt-primary-surface);
         }
 
         /* =========================================
-           SHARED SECTION CARD
+           DIFFICULTY STRIP
         ========================================= */
-        .vmt-settings,
-        .vmt-how,
-        .vmt-tips,
-        .vmt-faq,
-        .vmt-history {
-          margin-top: 25px;
-          padding: 23px;
-          border: 1px solid var(--vmt-border);
-          border-radius: 18px;
-          background: var(--vmt-surface);
-        }
-
-        .vmt-settings h2,
-        .vmt-how h2,
-        .vmt-tips h2,
-        .vmt-faq h2,
-        .vmt-history h2 {
-          margin: 0;
-          font-size: 19px;
-          font-weight: 800;
-          letter-spacing: -0.035em;
-          color: var(--vmt-text);
-        }
-
-        /* Difficulty */
-        .vmt-settings > div:first-child p {
-          margin: 7px 0 0;
-          color: var(--vmt-muted);
-          font-size: 12px;
-          line-height: 1.6;
-        }
-
-        .vmt-difficulty-options {
+        .vmt-diff-strip {
           display: grid;
           grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 10px;
-          margin-top: 17px;
+          gap: 6px;
+          margin-top: 12px;
         }
 
-        .vmt-difficulty-btn {
+        .vmt-diff-btn {
           display: flex;
           flex-direction: column;
-          align-items: flex-start;
-          gap: 5px;
-          min-width: 0;
-          padding: 13px;
+          align-items: center;
+          gap: 2px;
+          padding: 9px 8px;
           border: 1px solid var(--vmt-border);
-          border-radius: 12px;
-          background: white;
-          text-align: left;
-          cursor: pointer;
-          transition: 0.18s ease;
-        }
-
-        .vmt-difficulty-btn strong {
-          font-size: 13px;
+          border-radius: 10px;
+          background: var(--vmt-surface);
           color: var(--vmt-text);
+          cursor: pointer;
+          transition: border-color 0.15s ease, background 0.15s ease;
         }
 
-        .vmt-difficulty-btn span {
-          color: var(--vmt-muted);
-          font-size: 11px;
+        .vmt-diff-btn:hover:not(:disabled) {
+          border-color: var(--vmt-primary-hover);
+          background: var(--vmt-primary-surface);
         }
 
-        .vmt-difficulty-btn.is-active {
-          border-color: var(--vmt-primary);
-          background: var(--vmt-primary-soft);
-          color: var(--vmt-primary);
-          box-shadow: inset 0 0 0 1px var(--vmt-primary);
-        }
-
-        .vmt-difficulty-btn.is-active strong {
-          color: var(--vmt-primary);
-        }
-
-        .vmt-difficulty-btn:disabled {
+        .vmt-diff-btn:disabled {
           cursor: not-allowed;
           opacity: 0.55;
         }
 
-        .vmt-settings-note {
-          margin: 12px 0 0;
+        .vmt-diff-btn.is-active {
+          border-color: var(--vmt-primary);
+          background: var(--vmt-primary-soft);
+          box-shadow: inset 0 0 0 1px var(--vmt-primary);
+        }
+
+        .vmt-diff-name {
+          font-size: 12px;
+          font-weight: 800;
+        }
+
+        .vmt-diff-btn.is-active .vmt-diff-name {
+          color: var(--vmt-primary);
+        }
+
+        .vmt-diff-meta {
+          font-size: 9px;
+          color: var(--vmt-muted);
+          font-weight: 600;
+        }
+
+        .vmt-diff-btn.is-active .vmt-diff-meta {
+          color: var(--vmt-primary);
+          opacity: 0.8;
+        }
+
+        /* =========================================
+           EXPANDABLE
+        ========================================= */
+        .vmt-expand {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+          margin-top: 10px;
+          padding: 9px 12px;
+          border: 1px solid var(--vmt-border);
+          border-radius: 9px;
+          background: transparent;
           color: var(--vmt-muted);
           font-size: 11px;
+          font-weight: 700;
+          cursor: pointer;
+          text-align: left;
+          transition: color 0.15s ease, border-color 0.15s ease;
         }
 
-        /* History */
-        .vmt-history-heading {
+        .vmt-expand:hover {
+          color: var(--vmt-primary);
+          border-color: var(--vmt-primary-hover);
+        }
+
+        .vmt-expand-chev {
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--vmt-primary);
+          flex-shrink: 0;
+        }
+
+        .vmt-panel {
+          margin-top: 8px;
+          padding: 12px 14px;
+          border: 1px solid var(--vmt-border);
+          border-radius: 11px;
+          background: var(--vmt-soft);
+        }
+
+        .vmt-step {
+          display: flex;
+          gap: 10px;
+          padding: 9px 0;
+          border-bottom: 1px solid var(--vmt-border);
+        }
+
+        .vmt-step:first-child {
+          padding-top: 0;
+        }
+
+        .vmt-step:last-child {
+          padding-bottom: 0;
+          border-bottom: 0;
+        }
+
+        .vmt-step > span {
+          width: 26px;
+          height: 26px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex: 0 0 26px;
+          border-radius: 7px;
+          background: var(--vmt-primary-soft);
+          color: var(--vmt-primary);
+          font-size: 9px;
+          font-weight: 900;
+        }
+
+        .vmt-step strong {
+          display: block;
+          font-size: 11px;
+          font-weight: 800;
+          margin-bottom: 2px;
+        }
+
+        .vmt-step p {
+          color: var(--vmt-muted);
+          font-size: 10px;
+          line-height: 1.5;
+          margin: 0;
+        }
+
+        .vmt-panel-history {
+          display: grid;
+          gap: 5px;
+          max-height: 180px;
+          overflow-y: auto;
+        }
+
+        .vmt-history-row {
           display: flex;
           justify-content: space-between;
-          align-items: baseline;
-          gap: 12px;
-          margin-bottom: 14px;
+          align-items: center;
+          padding: 8px 10px;
+          border-radius: 8px;
+          background: var(--vmt-surface);
         }
 
-        .vmt-history-summary {
-          color: var(--vmt-muted);
+        .vmt-history-level {
+          display: flex;
+          flex-direction: column;
+          gap: 1px;
           font-size: 11px;
           font-weight: 700;
         }
 
-        .vmt-history-list {
-          display: grid;
-          gap: 6px;
-          max-height: 240px;
-          overflow-y: auto;
-        }
-
-        .vmt-history-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 10px 12px;
-          border-radius: 9px;
-          background: var(--vmt-soft);
-          font-size: 13px;
-        }
-
-        .vmt-history-meta {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .vmt-history-tiles {
+        .vmt-history-level small {
           color: var(--vmt-muted);
-          font-size: 11px;
+          font-size: 9px;
+          font-weight: 500;
         }
 
         .vmt-history-status {
-          padding: 3px 9px;
+          padding: 2px 8px;
           border-radius: 999px;
-          font-size: 10px;
+          font-size: 9px;
           font-weight: 800;
           text-transform: uppercase;
-          letter-spacing: 0.4px;
+          letter-spacing: 0.3px;
         }
 
         .vmt-history-status.is-correct {
@@ -1261,52 +1372,33 @@ export default function VisualMemoryTest() {
           color: #bd3e52;
         }
 
-        /* How to play */
-        .vmt-how-grid {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 15px;
+        /* =========================================
+           TIPS + FAQ
+        ========================================= */
+        .vmt-tips,
+        .vmt-faq {
           margin-top: 18px;
-        }
-
-        .vmt-how-grid article {
           padding: 16px;
           border: 1px solid var(--vmt-border);
-          border-radius: 13px;
-          background: #fcfcff;
+          border-radius: 14px;
+          background: var(--vmt-surface);
         }
 
-        .vmt-step-number {
-          display: inline-flex;
-          margin-bottom: 13px;
-          color: var(--vmt-primary);
-          font-size: 11px;
-          font-weight: 850;
-          letter-spacing: 0.1em;
-        }
-
-        .vmt-how-grid h3 {
-          margin: 0;
+        .vmt-tips h3,
+        .vmt-faq h3 {
+          margin: 0 0 10px;
           font-size: 14px;
-          font-weight: 750;
-          color: var(--vmt-text);
+          font-weight: 800;
+          letter-spacing: -0.2px;
         }
 
-        .vmt-how-grid p {
-          margin: 7px 0 0;
-          color: var(--vmt-muted);
-          font-size: 12px;
-          line-height: 1.65;
-        }
-
-        /* Tips */
         .vmt-tips ul {
           display: grid;
-          gap: 12px;
-          margin: 17px 0 0;
-          padding-left: 19px;
+          gap: 10px;
+          margin: 0;
+          padding-left: 18px;
           color: var(--vmt-muted);
-          font-size: 13px;
+          font-size: 12px;
           line-height: 1.7;
         }
 
@@ -1318,14 +1410,9 @@ export default function VisualMemoryTest() {
           color: var(--vmt-text);
         }
 
-        /* FAQ */
         .vmt-faq details {
-          padding: 15px 0;
+          padding: 11px 0;
           border-bottom: 1px solid var(--vmt-border);
-        }
-
-        .vmt-faq details:first-of-type {
-          margin-top: 8px;
         }
 
         .vmt-faq details:last-child {
@@ -1337,7 +1424,7 @@ export default function VisualMemoryTest() {
           position: relative;
           padding-right: 25px;
           color: var(--vmt-text);
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 700;
           line-height: 1.5;
           cursor: pointer;
@@ -1353,7 +1440,7 @@ export default function VisualMemoryTest() {
           right: 0;
           content: "+";
           color: var(--vmt-primary);
-          font-size: 19px;
+          font-size: 17px;
           font-weight: 500;
         }
 
@@ -1362,103 +1449,92 @@ export default function VisualMemoryTest() {
         }
 
         .vmt-faq details p {
-          margin: 10px 0 0;
+          margin: 8px 0 0;
           color: var(--vmt-muted);
-          font-size: 12px;
-          line-height: 1.75;
+          font-size: 11px;
+          line-height: 1.7;
         }
 
         /* =========================================
            RESPONSIVE
         ========================================= */
-        @media (max-width: 650px) {
-          .vmt-header-mark {
-            width: 52px;
-            height: 52px;
-            border-radius: 15px;
-            font-size: 27px;
+        @media (max-height: 720px) {
+          .vmt-board {
+            max-width: min(340px, 36vh);
+          }
+        }
+
+        @media (max-height: 620px) {
+          .vmt-board {
+            max-width: min(340px, 32vh);
           }
 
-          .vmt-stats {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 9px;
+          .vmt-head h2 {
+            font-size: 17px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .vmt-head {
+            flex-wrap: wrap;
           }
 
-          .vmt-stat {
-            padding: 12px;
+          .vmt-best-value {
+            font-size: 15px;
           }
 
-          .vmt-stat strong {
-            font-size: 20px;
+          .vmt-bar-cell {
+            padding: 8px 8px;
           }
 
-          .vmt-game-card,
-          .vmt-settings,
-          .vmt-how,
-          .vmt-tips,
-          .vmt-faq,
-          .vmt-history {
-            padding: 17px;
-            border-radius: 15px;
+          .vmt-bar-cell strong {
+            font-size: 13px;
           }
 
-          .vmt-game-top {
-            flex-direction: column;
-          }
-
-          .vmt-game-badges {
-            align-self: flex-start;
+          .vmt-stage {
+            padding: 11px;
           }
 
           .vmt-board {
-            width: min(100%, 310px);
-            gap: 7px;
+            gap: 6px;
           }
 
           .vmt-tile {
             border-radius: 8px;
           }
 
-          .vmt-how-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        @media (max-width: 390px) {
-          .vmt-header-mark {
-            width: 44px;
-            height: 44px;
-            font-size: 23px;
+          .vmt-diff-strip {
+            gap: 4px;
           }
 
-          .vmt-difficulty-options {
-            gap: 6px;
+          .vmt-diff-btn {
+            padding: 7px 6px;
           }
 
-          .vmt-difficulty-btn {
-            padding: 10px 8px;
+          .vmt-diff-name {
+            font-size: 11px;
           }
 
-          .vmt-difficulty-btn strong {
-            font-size: 12px;
+          .vmt-diff-meta {
+            font-size: 8px;
           }
 
-          .vmt-difficulty-btn span {
-            font-size: 10px;
+          .vmt-action {
+            flex-direction: column;
           }
 
-          .vmt-actions > button {
-            flex: 1 1 100%;
+          .vmt-action-btns {
+            justify-content: flex-end;
           }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .vmt *,
-          .vmt *::before,
-          .vmt *::after {
-            scroll-behavior: auto !important;
-            transition-duration: 0.01ms !important;
-            animation-duration: 0.01ms !important;
+          .vmt-tile,
+          .vmt-btn,
+          .vmt-progress-fill,
+          .vmt-countdown-fill {
+            transition: none;
+            animation: none;
           }
         }
       `}</style>
