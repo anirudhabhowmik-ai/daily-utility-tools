@@ -24,6 +24,7 @@ const allTools = [
   { title: "Board Feet Calculator", category: "Woodworking", href: "/tools/board-feet-calculator" },
   { title: "Exotic Pet Feeding Tracker", category: "Pets", href: "/tools/exotic-pet-nutrition-calculator" },
   { title: "Calligraphy Practice Sheet Generator", category: "Digital Planning", href: "/tools/calligraphy-practice-sheet-generator" },
+  { title: "Reaction Speed Test", category: "Brain Games", href: "/tools/reaction-speed-test" },
 ];
 
 export default function Home() {
