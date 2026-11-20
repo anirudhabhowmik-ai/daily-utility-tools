@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ADDITIONAL_TOOLS } from "./tools/new-tools/config";
 
 export const metadata: Metadata = {
   title: "ToolsAB | Premium Privacy-First Web Utilities",
@@ -25,16 +24,6 @@ const allTools = [
   { title: "Board Feet Calculator", category: "Woodworking", href: "/tools/board-feet-calculator" },
   { title: "Exotic Pet Feeding Tracker", category: "Pets", href: "/tools/exotic-pet-nutrition-calculator" },
   { title: "Calligraphy Practice Sheet Generator", category: "Digital Planning", href: "/tools/calligraphy-practice-sheet-generator" },
-  ...Object.entries(ADDITIONAL_TOOLS).map(([slug, tool]) => ({
-    title: tool.title,
-    category: slug.includes("plug") || slug.includes("bag") || slug.includes("jet-lag") || slug.includes("time-zone") ? "Travel & Time"
-      : slug.includes("visa") || slug.includes("upload") || slug.includes("passport") ? "Travel & Forms"
-        : slug.includes("price") || slug.includes("notice") || slug.includes("subscription") || slug.includes("expense") ? "Money & Planning"
-          : slug.includes("cross-stitch") || slug.includes("mosaic") || slug.includes("printable-planner") ? "Crafts & Planning"
-            : slug.includes("metadata") || slug.includes("redaction") ? "Privacy & Files"
-              : "Media & Print",
-    href: `/tools/${slug}`,
-  })),
 ];
 
 export default function Home() {
