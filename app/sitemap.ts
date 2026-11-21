@@ -73,12 +73,12 @@ const standaloneTools = [
   "/tools/mind-map-maker",
   "/tools/printable-notebook-generator",
   "/tools/essay-outline-builder",
-  "/tools/reading-progress-tracker",
-  "/tools/random-study-topic-picker",
-  "/tools/study-break-reminder",
-  "/tools/lecture-note-organizer",
-  "/tools/distraction-log-tracker",
-  "/tools/study-group-session-planner",
+  // "/tools/reading-progress-tracker",
+  // "/tools/random-study-topic-picker",
+  // "/tools/study-break-reminder",
+  // "/tools/lecture-note-organizer",
+  // "/tools/distraction-log-tracker",
+  // "/tools/study-group-session-planner",
 
   // Digital Planning
   "/tools/stamp-generator",
