@@ -30,7 +30,7 @@ const allTools: Tool[] = [
   // Student Productivity
   { title: "Study Stopwatch & Tracker", category: "Student Productivity", href: "/tools/study-stopwatch" },
   { title: "Pomodoro Study Timer", category: "Student Productivity", href: "/tools/pomodoro-study-timer" },
-  { title: "Smart Study Planner", category: "Student Productivity", href: "/tools/study-planner" },
+  { title: "Smart Study Planner", category: "Student Productivity", href: "/tools/smart-study-planner" },
   { title: "Exam Countdown Tracker", category: "Student Productivity", href: "/tools/exam-countdown-tracker" },
   { title: "Study Habit Tracker", category: "Student Productivity", href: "/tools/study-habit-tracker" },
   { title: "Flashcard Maker", category: "Student Productivity", href: "/tools/flashcard-maker" },
