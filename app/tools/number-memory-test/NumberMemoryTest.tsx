@@ -594,6 +594,18 @@ export default function NumberMemoryTest() {
           </ul>
         </section>
 
+        {/* WHY BUILD */}
+        <section className="nmt-tips">
+          <h2>Why Build This?</h2>
+          <ul>
+            <li>
+              It will increase memory power.
+            </li>
+            <li>It can help in exam preparation.</li>
+            <li>It will make you feel positive energy.</li>
+          </ul>
+        </section>
+
         <div className="nmt-storage-note">
           Your best score is saved locally in this browser. It is not
           uploaded to a server and may not appear on another device or

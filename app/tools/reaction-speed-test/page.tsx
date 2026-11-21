@@ -29,7 +29,7 @@ export default function ReactionSpeedTestPage() {
         <h2>How to Use the Reaction Speed Test</h2>
 
         <ol>
-          <li>Click the Start Test button.</li>
+          <li>Tap on blue color arena, where it's written "Ready when you are" (or press Space / Enter) to begin.</li>
           <li>Wait for the red screen to turn green.</li>
           <li>Click immediately when the screen turns green.</li>
           <li>Complete all five rounds to calculate your average.</li>

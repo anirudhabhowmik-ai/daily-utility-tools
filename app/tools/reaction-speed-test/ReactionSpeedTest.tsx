@@ -735,8 +735,8 @@ export default function ReactionSpeedTest() {
         <div className="rs-panel">
           <h3>How to play</h3>
           <ol>
-            <li>Tap the arena (or press Space / Enter) to begin.</li>
-            <li>The screen stays red for a random 1.5 to 4.5 seconds. Don't click.</li>
+            <li>Tap on blue color arena, where it's written "Ready when you are" (or press Space / Enter) to begin.</li>
+            <li>The screen stays red for a random 1.5 to 4.5 seconds. Don't click while it's red.</li>
             <li>The moment it turns green, react as fast as you can.</li>
             <li>Finish all five rounds to get your average, rank and consistency.</li>
           </ol>

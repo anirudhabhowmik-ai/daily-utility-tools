@@ -14,9 +14,16 @@ const PAGE_SIZES: Record<PageSize, { width: number; height: number; label: strin
   letter: { width: 215.9, height: 279.4, label: "US Letter" },
 };
 
+type GuideColors = {
+  baseline: string;
+  middle: string;
+  top: string;
+  slant: string;
+};
+
 const COLOR_PRESETS: Record<
   Exclude<ColorPreset, "custom">,
-  { label: string; baseline: string; middle: string; top: string; slant: string }
+  GuideColors & { label: string }
 > = {
   blue: {
     label: "Classic blue",
@@ -48,13 +55,6 @@ const COLOR_PRESETS: Record<
   },
 };
 
-type GuideColors = {
-  baseline: string;
-  middle: string;
-  top: string;
-  slant: string;
-};
-
 type SheetSettings = {
   pageSize: PageSize;
   orientation: Orientation;
@@ -67,7 +67,6 @@ type SheetSettings = {
   showTop: boolean;
   showBaseline: boolean;
   guideStyle: GuideStyle;
-  colorPreset: ColorPreset;
   colors: GuideColors;
   lineWidth: number;
   showBorder: boolean;
@@ -77,30 +76,52 @@ type SheetSettings = {
    Helpers
 ========================================================= */
 
+const DESCENDER_GAP_RATIO = 0.6;
+
 function clamp(value: number, min: number, max: number): number {
   if (!Number.isFinite(value)) return min;
   return Math.min(max, Math.max(min, value));
 }
 
-function getPageDimensions(
-  pageSize: PageSize,
-  orientation: Orientation
-) {
+function pickColors(c: GuideColors): GuideColors {
+  return {
+    baseline: c.baseline,
+    middle: c.middle,
+    top: c.top,
+    slant: c.slant,
+  };
+}
+
+function getPageDimensions(pageSize: PageSize, orientation: Orientation) {
   const page = PAGE_SIZES[pageSize];
 
-  const width =
-    orientation === "portrait" ? page.width : page.height;
-
-  const height =
-    orientation === "portrait" ? page.height : page.width;
+  const width = orientation === "portrait" ? page.width : page.height;
+  const height = orientation === "portrait" ? page.height : page.width;
 
   return { width, height };
 }
 
-function getGuideDash(style: GuideStyle): string {
-  if (style === "dotted") return "1 2";
-  if (style === "minimal") return "none";
-  return "4 3";
+/**
+ * Each writing row is a band (top line -> baseline) followed by a gap
+ * for descenders, so guides of neighbouring rows never overlap.
+ * `lineSpacing` is the band height; the pitch is band + gap.
+ */
+function getRowLayout(innerHeight: number, lineSpacing: number) {
+  const bandHeight = lineSpacing;
+  const gap = lineSpacing * DESCENDER_GAP_RATIO;
+  const pitch = bandHeight + gap;
+  const rowCount = Math.max(0, Math.floor((innerHeight + gap) / pitch));
+
+  return { bandHeight, gap, pitch, rowCount };
+}
+
+function getMiddleLineStyle(style: GuideStyle): {
+  dash: string;
+  linecap: "butt" | "round";
+} {
+  if (style === "dotted") return { dash: "0.01 1.6", linecap: "round" };
+  if (style === "minimal") return { dash: "", linecap: "butt" };
+  return { dash: "4 3", linecap: "butt" };
 }
 
 function escapeXml(value: string): string {
@@ -145,23 +166,27 @@ function generateCalligraphySvg(settings: SheetSettings): string {
   const innerWidth = width - margin * 2;
   const innerHeight = height - margin * 2;
 
-  const rowCount = Math.floor(innerHeight / lineSpacing);
+  const { bandHeight, pitch, rowCount } = getRowLayout(
+    innerHeight,
+    lineSpacing
+  );
 
   const radians = (slantAngle * Math.PI) / 180;
 
-  // Angle is measured from the horizontal baseline.
-  // Horizontal drift from top to bottom of the page.
+  // Each slant line is drawn from y=0 to y=height, so its rise is `height`.
+  // The matching run is height / tan(angle), which gives exactly the chosen
+  // angle. The clip path only hides the parts outside the writing area.
   const horizontalDrift = height / Math.tan(radians);
 
   const colors = settings.colors;
-
-  const strokeLinecap = "round";
+  const middleStyle = getMiddleLineStyle(settings.guideStyle);
 
   const horizontalLines: string[] = [];
 
   for (let index = 0; index < rowCount; index++) {
-    const topY = margin + index * lineSpacing;
-    const middleY = topY + lineSpacing / 2;
+    const topY = margin + index * pitch;
+    const middleY = topY + bandHeight / 2;
+    const baselineY = topY + bandHeight;
 
     if (settings.showTop) {
       horizontalLines.push(
@@ -172,33 +197,18 @@ function generateCalligraphySvg(settings: SheetSettings): string {
     }
 
     if (settings.showMiddle) {
+      const dashAttr = middleStyle.dash
+        ? ` stroke-dasharray="${middleStyle.dash}"`
+        : "";
+
       horizontalLines.push(
         `<line x1="${margin}" y1="${middleY}" x2="${width - margin}" y2="${middleY}" stroke="${escapeXml(
           colors.middle
-        )}" stroke-width="${lineWidth}" stroke-dasharray="${getGuideDash(
-          settings.guideStyle
-        )}" />`
+        )}" stroke-width="${lineWidth}" stroke-linecap="${middleStyle.linecap}"${dashAttr} />`
       );
     }
-  }
 
-  // Draw the final bottom baseline separately.
-  const finalBaselineY = margin + rowCount * lineSpacing;
-
-  if (settings.showBaseline && rowCount > 0) {
-    horizontalLines.push(
-      `<line x1="${margin}" y1="${finalBaselineY}" x2="${width - margin}" y2="${finalBaselineY}" stroke="${escapeXml(
-        colors.baseline
-      )}" stroke-width="${lineWidth * 1.4}" />`
-    );
-  }
-
-  // Draw the baseline for each row.
-  // It also acts as the top line of the following row.
-  if (settings.showBaseline) {
-    for (let index = 0; index < rowCount; index++) {
-      const baselineY = margin + (index + 1) * lineSpacing;
-
+    if (settings.showBaseline) {
       horizontalLines.push(
         `<line x1="${margin}" y1="${baselineY}" x2="${width - margin}" y2="${baselineY}" stroke="${escapeXml(
           colors.baseline
@@ -210,18 +220,18 @@ function generateCalligraphySvg(settings: SheetSettings): string {
   const slantLines: string[] = [];
 
   if (settings.showSlant) {
-    // Lines are spaced by their x-coordinate at the top edge.
-    // Extend the starting coordinates so the entire writing area is covered.
-    const firstX = margin - horizontalDrift - slantSpacing;
-    const lastX = width - margin;
+    // Lines lean to the right ("/"): the top is further right than the bottom.
+    // Starting x positions at the top edge are spaced evenly from the left
+    // margin and extended far enough right to cover the entire page.
+    const firstX = margin;
+    const lastX = width - margin + horizontalDrift;
 
     const numberOfSlantLines =
-      Math.ceil((lastX - firstX) / slantSpacing) + 1;
+      Math.floor((lastX - firstX) / slantSpacing) + 1;
 
     for (let index = 0; index < numberOfSlantLines; index++) {
       const x = firstX + index * slantSpacing;
-
-      const bottomX = x + horizontalDrift;
+      const bottomX = x - horizontalDrift;
 
       slantLines.push(
         `<line x1="${x}" y1="0" x2="${bottomX}" y2="${height}" stroke="${escapeXml(
@@ -235,13 +245,12 @@ function generateCalligraphySvg(settings: SheetSettings): string {
     ? `<rect x="${margin}" y="${margin}" width="${innerWidth}" height="${innerHeight}" fill="none" stroke="#e5e7eb" stroke-width="0.3" />`
     : "";
 
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg"
+  return `<svg xmlns="http://www.w3.org/2000/svg"
      width="${width}mm"
      height="${height}mm"
      viewBox="0 0 ${width} ${height}">
   <title>Calligraphy Practice Sheet</title>
-  <desc>${PAGE_SIZES[settings.pageSize].label} calligraphy practice sheet with ${lineSpacing}mm writing spacing and ${slantAngle} degree slant guides.</desc>
+  <desc>${PAGE_SIZES[settings.pageSize].label} calligraphy practice sheet with ${lineSpacing}mm writing band height and ${slantAngle} degree slant guides.</desc>
   <defs>
     <clipPath id="writing-area">
       <rect x="${margin}" y="${margin}" width="${innerWidth}" height="${innerHeight}" />
@@ -262,14 +271,14 @@ function generateCalligraphySvg(settings: SheetSettings): string {
 
 export default function CalligraphySheetGenerator() {
   const [pageSize, setPageSize] = useState<PageSize>("letter");
-  const [orientation, setOrientation] =
-    useState<Orientation>("portrait");
+  const [orientation, setOrientation] = useState<Orientation>("portrait");
 
-  const [lineSpacing, setLineSpacing] = useState(12);
-  const [slantAngle, setSlantAngle] = useState(55);
-  const [slantSpacing, setSlantSpacing] = useState(8);
-  const [margin, setMargin] = useState(12);
-  const [lineWidth, setLineWidth] = useState(0.3);
+  // Raw values (not clamped while typing). Clamped versions are derived below.
+  const [lineSpacingRaw, setLineSpacing] = useState(12);
+  const [slantAngleRaw, setSlantAngle] = useState(55);
+  const [slantSpacingRaw, setSlantSpacing] = useState(8);
+  const [marginRaw, setMargin] = useState(12);
+  const [lineWidthRaw, setLineWidth] = useState(0.3);
 
   const [showSlant, setShowSlant] = useState(true);
   const [showMiddle, setShowMiddle] = useState(true);
@@ -277,44 +286,31 @@ export default function CalligraphySheetGenerator() {
   const [showBaseline, setShowBaseline] = useState(true);
   const [showBorder, setShowBorder] = useState(false);
 
-  const [guideStyle, setGuideStyle] =
-    useState<GuideStyle>("classic");
+  const [guideStyle, setGuideStyle] = useState<GuideStyle>("classic");
 
-  const [colorPreset, setColorPreset] =
-    useState<ColorPreset>("blue");
+  const [colorPreset, setColorPreset] = useState<ColorPreset>("blue");
 
   const [customColors, setCustomColors] = useState<GuideColors>(
-    COLOR_PRESETS.blue
+    pickColors(COLOR_PRESETS.blue)
   );
 
-  const [activeTab, setActiveTab] = useState<
-    "layout" | "guides" | "style"
-  >("layout");
+  const [activeTab, setActiveTab] = useState<"layout" | "guides" | "style">(
+    "layout"
+  );
 
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const colors =
+  // Clamped values used for everything that is drawn or displayed.
+  const margin = clamp(marginRaw, 5, 25);
+  const lineSpacing = clamp(lineSpacingRaw, 6, 20);
+  const slantAngle = clamp(slantAngleRaw, 35, 80);
+  const slantSpacing = clamp(slantSpacingRaw, 5, 20);
+  const lineWidth = clamp(lineWidthRaw, 0.1, 1.2);
+
+  const colors: GuideColors =
     colorPreset === "custom"
       ? customColors
-      : COLOR_PRESETS[colorPreset];
-
-  const settings: SheetSettings = {
-    pageSize,
-    orientation,
-    lineSpacing,
-    slantAngle,
-    slantSpacing,
-    margin,
-    showSlant,
-    showMiddle,
-    showTop,
-    showBaseline,
-    guideStyle,
-    colorPreset,
-    colors,
-    lineWidth,
-    showBorder,
-  };
+      : pickColors(COLOR_PRESETS[colorPreset]);
 
   const dimensions = useMemo(
     () => getPageDimensions(pageSize, orientation),
@@ -324,10 +320,31 @@ export default function CalligraphySheetGenerator() {
   const innerWidth = dimensions.width - margin * 2;
   const innerHeight = dimensions.height - margin * 2;
 
-  const rowCount = Math.floor(innerHeight / lineSpacing);
+  const { rowCount, pitch } = getRowLayout(innerHeight, lineSpacing);
 
   const previewSvg = useMemo(
-    () => generateCalligraphySvg(settings),
+    () =>
+      generateCalligraphySvg({
+        pageSize,
+        orientation,
+        lineSpacing,
+        slantAngle,
+        slantSpacing,
+        margin,
+        showSlant,
+        showMiddle,
+        showTop,
+        showBaseline,
+        guideStyle,
+        colors: {
+          baseline: colors.baseline,
+          middle: colors.middle,
+          top: colors.top,
+          slant: colors.slant,
+        },
+        lineWidth,
+        showBorder,
+      }),
     [
       pageSize,
       orientation,
@@ -340,8 +357,10 @@ export default function CalligraphySheetGenerator() {
       showTop,
       showBaseline,
       guideStyle,
-      colorPreset,
-      customColors,
+      colors.baseline,
+      colors.middle,
+      colors.top,
+      colors.slant,
       lineWidth,
       showBorder,
     ]
@@ -364,14 +383,16 @@ export default function CalligraphySheetGenerator() {
 
     setGuideStyle("classic");
     setColorPreset("blue");
-    setCustomColors(COLOR_PRESETS.blue);
+    setCustomColors(pickColors(COLOR_PRESETS.blue));
 
     setActiveTab("layout");
     setShowAdvanced(false);
   };
 
   const downloadSvg = () => {
-    const blob = new Blob([previewSvg], {
+    const fileContent = `<?xml version="1.0" encoding="UTF-8"?>\n${previewSvg}`;
+
+    const blob = new Blob([fileContent], {
       type: "image/svg+xml;charset=utf-8",
     });
 
@@ -388,68 +409,63 @@ export default function CalligraphySheetGenerator() {
       return;
     }
 
-    const page = PAGE_SIZES[pageSize];
-
-    const printWidth =
-      orientation === "portrait" ? page.width : page.height;
-
-    const printHeight =
-      orientation === "portrait" ? page.height : page.width;
+    const printWidth = dimensions.width;
+    const printHeight = dimensions.height;
 
     printWindow.document.open();
 
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Calligraphy Practice Sheet</title>
-          <meta charset="UTF-8" />
-          <style>
-            @page {
-              size: ${printWidth}mm ${printHeight}mm;
-              margin: 0;
-            }
+    printWindow.document.write(`<!DOCTYPE html>
+<html>
+  <head>
+    <title>Calligraphy Practice Sheet</title>
+    <meta charset="UTF-8" />
+    <style>
+      @page {
+        size: ${printWidth}mm ${printHeight}mm;
+        margin: 0;
+      }
 
-            html, body {
-              width: ${printWidth}mm;
-              height: ${printHeight}mm;
-              margin: 0;
-              padding: 0;
-              background: white;
-            }
+      html, body {
+        width: ${printWidth}mm;
+        height: ${printHeight}mm;
+        margin: 0;
+        padding: 0;
+        background: white;
+      }
 
-            svg {
-              display: block;
-              width: ${printWidth}mm;
-              height: ${printHeight}mm;
-            }
-          </style>
-        </head>
-        <body>
-          ${previewSvg}
-          <script>
-            window.onload = function() {
-              window.focus();
-              window.print();
-            };
-          <\/script>
-        </body>
-      </html>
-    `);
+      svg {
+        display: block;
+        width: ${printWidth}mm;
+        height: ${printHeight}mm;
+      }
+    </style>
+  </head>
+  <body>
+    ${previewSvg}
+    <script>
+      window.onload = function() {
+        window.focus();
+        window.print();
+      };
+    <\/script>
+  </body>
+</html>`);
 
     printWindow.document.close();
   };
 
-  const updateColor = (
-    key: keyof GuideColors,
-    value: string
-  ) => {
-    setColorPreset("custom");
+  const handlePresetChange = (value: ColorPreset) => {
+    if (value === "custom") {
+      // Start custom colors from whatever is currently active.
+      setCustomColors(pickColors(colors));
+    }
+    setColorPreset(value);
+  };
 
-    setCustomColors((current) => ({
-      ...current,
-      [key]: value,
-    }));
+  const updateColor = (key: keyof GuideColors, value: string) => {
+    // Always build from the currently active colors so other colors are kept.
+    setCustomColors({ ...pickColors(colors), [key]: value });
+    setColorPreset("custom");
   };
 
   const tabs = [
@@ -543,12 +559,10 @@ export default function CalligraphySheetGenerator() {
 
                   <NumberField
                     label="Page margin (mm)"
-                    value={margin}
+                    value={marginRaw}
                     min={5}
                     max={25}
-                    onChange={(value) =>
-                      setMargin(clamp(value, 5, 25))
-                    }
+                    onChange={(value) => setMargin(value)}
                   />
 
                   <div className="cs-dimension-box">
@@ -580,17 +594,18 @@ export default function CalligraphySheetGenerator() {
               {activeTab === "guides" && (
                 <div className="cs-tab-content">
                   <NumberField
-                    label="Writing line spacing (mm)"
-                    value={lineSpacing}
+                    label="Writing band height (mm)"
+                    value={lineSpacingRaw}
                     min={6}
                     max={20}
-                    onChange={(value) =>
-                      setLineSpacing(clamp(value, 6, 20))
-                    }
+                    onChange={(value) => setLineSpacing(value)}
                   />
 
                   <div className="cs-range-presets">
-                    <span>Quick spacing</span>
+                    <span>
+                      Quick band height · a descender gap of 60% is added
+                      below each row
+                    </span>
 
                     {[8, 10, 12, 15, 18].map((value) => (
                       <button
@@ -610,12 +625,10 @@ export default function CalligraphySheetGenerator() {
 
                   <NumberField
                     label="Slant angle (degrees)"
-                    value={slantAngle}
+                    value={slantAngleRaw}
                     min={35}
                     max={80}
-                    onChange={(value) =>
-                      setSlantAngle(clamp(value, 35, 80))
-                    }
+                    onChange={(value) => setSlantAngle(value)}
                   />
 
                   <div className="cs-range-presets">
@@ -639,12 +652,10 @@ export default function CalligraphySheetGenerator() {
 
                   <NumberField
                     label="Slant guide spacing (mm)"
-                    value={slantSpacing}
+                    value={slantSpacingRaw}
                     min={5}
                     max={20}
-                    onChange={(value) =>
-                      setSlantSpacing(clamp(value, 5, 20))
-                    }
+                    onChange={(value) => setSlantSpacing(value)}
                   />
 
                   <div className="cs-toggle-list">
@@ -675,9 +686,7 @@ export default function CalligraphySheetGenerator() {
                       <input
                         type="checkbox"
                         checked={showTop}
-                        onChange={(event) =>
-                          setShowTop(event.target.checked)
-                        }
+                        onChange={(event) => setShowTop(event.target.checked)}
                       />
                       <span className="cs-switch-track" aria-hidden="true">
                         <span className="cs-switch-thumb" />
@@ -733,7 +742,7 @@ export default function CalligraphySheetGenerator() {
                       className="tool-input"
                       value={colorPreset}
                       onChange={(event) =>
-                        setColorPreset(event.target.value as ColorPreset)
+                        handlePresetChange(event.target.value as ColorPreset)
                       }
                     >
                       <option value="blue">Classic blue</option>
@@ -783,12 +792,10 @@ export default function CalligraphySheetGenerator() {
 
                   <NumberField
                     label="Guide line thickness (mm)"
-                    value={lineWidth}
+                    value={lineWidthRaw}
                     min={0.1}
                     max={1.2}
-                    onChange={(value) =>
-                      setLineWidth(clamp(value, 0.1, 1.2))
-                    }
+                    onChange={(value) => setLineWidth(value)}
                   />
 
                   <label className="cs-switch">
@@ -800,9 +807,7 @@ export default function CalligraphySheetGenerator() {
                     <input
                       type="checkbox"
                       checked={showBorder}
-                      onChange={(event) =>
-                        setShowBorder(event.target.checked)
-                      }
+                      onChange={(event) => setShowBorder(event.target.checked)}
                     />
                     <span className="cs-switch-track" aria-hidden="true">
                       <span className="cs-switch-thumb" />
@@ -825,6 +830,11 @@ export default function CalligraphySheetGenerator() {
                   <div>
                     <span>Writing rows</span>
                     <strong>{rowCount}</strong>
+                  </div>
+
+                  <div>
+                    <span>Row pitch (top to top)</span>
+                    <strong>{pitch.toFixed(1)} mm</strong>
                   </div>
 
                   <div>
@@ -918,10 +928,11 @@ export default function CalligraphySheetGenerator() {
               <div className="cs-paper-stage">
                 <div
                   className={`cs-paper ${
-                    orientation === "landscape"
-                      ? "cs-paper-landscape"
-                      : ""
+                    orientation === "landscape" ? "cs-paper-landscape" : ""
                   }`}
+                  style={{
+                    aspectRatio: `${dimensions.width} / ${dimensions.height}`,
+                  }}
                   dangerouslySetInnerHTML={{ __html: previewSvg }}
                 />
               </div>
@@ -933,7 +944,7 @@ export default function CalligraphySheetGenerator() {
                 </div>
 
                 <div>
-                  <span>Line spacing</span>
+                  <span>Band height</span>
                   <strong>{lineSpacing} mm</strong>
                 </div>
 
@@ -1208,6 +1219,7 @@ export default function CalligraphySheetGenerator() {
           width: 100%;
           color: var(--tool-muted, #64748b);
           font-size: 10px;
+          line-height: 1.5;
         }
 
         .cs-preset {
@@ -1239,6 +1251,7 @@ export default function CalligraphySheetGenerator() {
         /* Shared switch row */
 
         .cs-switch {
+          position: relative;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -1291,7 +1304,8 @@ export default function CalligraphySheetGenerator() {
           border-radius: 999px;
           background: #cbd5e1;
           border: 1px solid #cbd5e1;
-          transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+          transition: background 0.2s ease, border-color 0.2s ease,
+            box-shadow 0.2s ease;
         }
 
         /* Thumb */
@@ -1304,8 +1318,8 @@ export default function CalligraphySheetGenerator() {
           height: 20px;
           border-radius: 50%;
           background: #fff;
-          box-shadow: 0 1px 3px rgba(15, 23, 42, .25);
-          transition: transform .2s ease;
+          box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
+          transition: transform 0.2s ease;
         }
 
         /* Checked state */
@@ -1313,7 +1327,7 @@ export default function CalligraphySheetGenerator() {
         .cs-switch input:checked + .cs-switch-track {
           background: #ff5a1f;
           border-color: #ff5a1f;
-          box-shadow: 0 2px 6px rgba(37, 99, 235, .25);
+          box-shadow: 0 2px 6px rgba(255, 90, 31, 0.25);
         }
 
         .cs-switch input:checked + .cs-switch-track .cs-switch-thumb {
@@ -1323,7 +1337,7 @@ export default function CalligraphySheetGenerator() {
         /* Focus ring */
 
         .cs-switch input:focus-visible + .cs-switch-track {
-          outline: 3px solid rgba(37, 99, 235, .25);
+          outline: 3px solid rgba(255, 90, 31, 0.3);
           outline-offset: 2px;
         }
 
@@ -1503,12 +1517,10 @@ export default function CalligraphySheetGenerator() {
           overflow: hidden;
           background: white;
           box-shadow: 0 2px 9px rgba(15, 23, 42, 0.12);
-          aspect-ratio: 210 / 297;
         }
 
         .cs-paper-landscape {
           max-width: 100%;
-          aspect-ratio: 297 / 210;
         }
 
         .cs-paper :global(svg) {
@@ -1624,6 +1636,10 @@ export default function CalligraphySheetGenerator() {
 
           .cs-paper {
             max-width: 480px;
+          }
+
+          .cs-paper-landscape {
+            max-width: 100%;
           }
         }
 

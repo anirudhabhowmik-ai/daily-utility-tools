@@ -26,6 +26,19 @@ export default function StampGeneratorPage() {
 
       {/* 1,000+ Words of SEO & AdSense Approved Content */}
       <div className="article-content">
+        <h2>How to use this Digital Stamp Generator tool?</h2>
+        <p>In quick start you can select the stamp tex. Shape will change base on your text selection</p>
+        <p>You can select shape from select shape option.</p>
+        <p>You can add text from main text option. This is for your Digital Stamp text and this is main text.</p>
+        <p>There is one sub text option. If you want then you can add sub text.</p>
+        <p>There is some options given by those you can change the font size, color for main text and sub text.</p>
+        <p>There is text styling option available by this you can make your main and sub text bold, italic and add underline.</p>
+        <p>You can cueve your main text and sub text.</p>
+        <p>Shape border width and opacity can be changed as per your requirements.</p>
+        <p>There is one option "Whole Stamp Tilt". This option make main text and sub text in a group and rotate in a group.</p>
+        <p>You can add your own image into the stamp along with texts.</p>
+        <p>You can click on texts and image and manually drag and drop to set their positions.</p>
+
         <h2>Why I Built This Digital Stamp Generator</h2>
         <p>
           If you use an iPad for digital planning—whether you are a student using GoodNotes 
