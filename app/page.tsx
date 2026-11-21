@@ -14,6 +14,7 @@ type Tool = {
   href: string;
 };
 
+
 const allTools: Tool[] = [
   // Brain Games
   { title: "Reaction Speed Test", category: "Brain Games", href: "/tools/reaction-speed-test" },
@@ -25,6 +26,28 @@ const allTools: Tool[] = [
   { title: "Color Blindness Test", category: "Brain Games", href: "/tools/color-blindness-test" },
   { title: "Focus and Concentration Test", category: "Brain Games", href: "/tools/focus-test" },
   { title: "Mental Math Challenge", category: "Brain Games", href: "/tools/mental-math-challenge" },
+
+  // Student Productivity
+  { title: "Study Stopwatch & Tracker", category: "Student Productivity", href: "/tools/study-stopwatch" },
+  { title: "Pomodoro Study Timer", category: "Student Productivity", href: "/tools/pomodoro-study-timer" },
+  { title: "Smart Study Planner", category: "Student Productivity", href: "/tools/study-planner" },
+  { title: "Exam Countdown Tracker", category: "Student Productivity", href: "/tools/exam-countdown-tracker" },
+  { title: "Study Habit Tracker", category: "Student Productivity", href: "/tools/study-habit-tracker" },
+  { title: "Flashcard Maker", category: "Student Productivity", href: "/tools/flashcard-maker" },
+  { title: "Spaced Repetition Planner", category: "Student Productivity", href: "/tools/spaced-repetition-planner" },
+  { title: "Custom Quiz Maker", category: "Student Productivity", href: "/tools/custom-quiz-maker" },
+  { title: "Syllabus Progress Tracker", category: "Student Productivity", href: "/tools/syllabus-progress-tracker" },
+  { title: "Vocabulary Builder", category: "Student Productivity", href: "/tools/vocabulary-builder" },
+  { title: "Cornell Notes Generator", category: "Student Productivity", href: "/tools/cornell-notes-generator" },
+  { title: "Mind Map Maker", category: "Student Productivity", href: "/tools/mind-map-maker" },
+  { title: "Printable Notebook Generator", category: "Student Productivity", href: "/tools/printable-notebook-generator" },
+  { title: "Essay Outline Builder", category: "Student Productivity", href: "/tools/essay-outline-builder" },
+  { title: "Reading Progress Tracker", category: "Student Productivity", href: "/tools/reading-progress-tracker" },
+  { title: "Random Study Topic Picker", category: "Student Productivity", href: "/tools/random-study-topic-picker" },
+  { title: "Study Break Reminder", category: "Student Productivity", href: "/tools/study-break-reminder" },
+  { title: "Lecture Note Organizer", category: "Student Productivity", href: "/tools/lecture-note-organizer" },
+  { title: "Distraction Log Tracker", category: "Student Productivity", href: "/tools/distraction-log-tracker" },
+  { title: "Study Group Session Planner", category: "Student Productivity", href: "/tools/study-group-session-planner" },
 
   // Digital Planning
   { title: "Digital Stamp Generator", category: "Digital Planning", href: "/tools/stamp-generator" },
@@ -57,6 +80,7 @@ const allTools: Tool[] = [
   // Pets
   { title: "Exotic Pet Feeding Tracker", category: "Pets", href: "/tools/exotic-pet-nutrition-calculator" },
 ];
+
 
 const groupedTools = allTools.reduce<Record<string, Tool[]>>(
   (groups, tool) => {
