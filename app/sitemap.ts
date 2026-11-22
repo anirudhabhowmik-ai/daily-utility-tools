@@ -76,7 +76,7 @@ const standaloneTools = [
   "/tools/reading-progress-tracker",
   "/tools/random-study-topic-picker",
   "/tools/study-break-reminder",
-  // "/tools/lecture-note-organizer",
+  "/tools/lecture-note-organizer",
   // "/tools/distraction-log-tracker",
   // "/tools/study-group-session-planner",
 
