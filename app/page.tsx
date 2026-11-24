@@ -16,6 +16,13 @@ type Tool = {
 
 
 const allTools: Tool[] = [
+  // Text & Writing
+  {
+    title: "Fancy Text Generator",
+    category: "Text & Writing",
+    href: "/tools/fancy-text-generator",
+  },
+
   // Brain Games
   { title: "Reaction Speed Test", category: "Brain Games", href: "/tools/reaction-speed-test" },
   { title: "Number Memory Test", category: "Brain Games", href: "/tools/number-memory-test" },

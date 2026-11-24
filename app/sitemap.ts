@@ -47,6 +47,9 @@ const mainPages = [
 
 // All standalone tools from the homepage
 const standaloneTools = [
+  // Text & Writing
+  "/tools/fancy-text-generator",
+
   // Brain Games
   "/tools/reaction-speed-test",
   "/tools/number-memory-test",
