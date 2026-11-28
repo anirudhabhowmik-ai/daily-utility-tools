@@ -101,6 +101,7 @@ const standaloneTools = [
   // Developer Tools
   "/tools/jwt-decoder",
   "/tools/llm-token-cost-calculator",
+  "/tools/favicon-generator",
 
   // Creators
   "/tools/photo-to-coloring-page-converter",

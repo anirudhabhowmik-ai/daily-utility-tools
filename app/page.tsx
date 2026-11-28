@@ -75,6 +75,7 @@ const allTools: Tool[] = [
   // Developer Tools
   { title: "JWT Decoder", category: "Developer Tools", href: "/tools/jwt-decoder" },
   { title: "LLM Token Cost Calculator", category: "Developer Tools", href: "/tools/llm-token-cost-calculator" },
+  { title: "Favicon Generator", category: "Developer Tools", href: "/tools/favicon-generator" },
 
   // Creators
   { title: "Photo-to-Coloring-Page Converter", category: "Creators", href: "/tools/photo-to-coloring-page-converter" },
