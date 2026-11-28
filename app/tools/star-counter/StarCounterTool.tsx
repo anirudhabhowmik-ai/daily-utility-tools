@@ -11,6 +11,27 @@ import {
 } from "react";
 
 /* ------------------------------------------------------------------ */
+/* Config                                                              */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Open-Meteo's free endpoints are for NON-COMMERCIAL use only.
+ * If your site is commercial (ads, paid plans, etc.), buy an Open-Meteo
+ * plan and put the key here. The key is visible in the browser, so for
+ * production it is better to proxy these two requests through your own
+ * API route. Leave empty to use the free endpoints.
+ */
+const OPEN_METEO_API_KEY = "";
+
+const FORECAST_URL = OPEN_METEO_API_KEY
+  ? "https://customer-api.open-meteo.com/v1/forecast"
+  : "https://api.open-meteo.com/v1/forecast";
+const GEOCODE_URL = OPEN_METEO_API_KEY
+  ? "https://customer-geocoding-api.open-meteo.com/v1/search"
+  : "https://geocoding-api.open-meteo.com/v1/search";
+const KEY_PARAM = OPEN_METEO_API_KEY ? `&apikey=${encodeURIComponent(OPEN_METEO_API_KEY)}` : "";
+
+/* ------------------------------------------------------------------ */
 /* Types & data                                                        */
 /* ------------------------------------------------------------------ */
 
@@ -22,11 +43,11 @@ type Tone = "great" | "good" | "fair" | "poor" | "none";
 type SkyLevel = {
   value: number;
   title: string;
-  nelm: number; // typical naked-eye limiting magnitude (midpoint)
+  nelm: number;
   nelmRange: string;
   sqm: string;
   color: string;
-  dark: boolean; // true = use white text on swatch
+  dark: boolean;
   description: string;
   example: string;
 };
@@ -171,7 +192,7 @@ function moonAt(ms: number, place?: { lat: number; lon: number } | null) {
     const eps = (23.439 - 0.0000004 * d) * RAD;
     const ra = Math.atan2(Math.sin(lam) * Math.cos(eps) - Math.tan(bet) * Math.sin(eps), Math.cos(lam));
     const dec = Math.asin(Math.sin(bet) * Math.cos(eps) + Math.cos(bet) * Math.sin(eps) * Math.sin(lam));
-    alt = altitudeOf(ra, dec, ms, place.lat, place.lon) - 0.9; // rough parallax correction
+    alt = altitudeOf(ra, dec, ms, place.lat, place.lon) - 0.9;
   }
 
   return { illum, alt, phase: PHASES[idx], emoji: PHASE_EMOJI[idx] };
@@ -532,7 +553,9 @@ export default function StarCounterTool() {
 
   const [forecast, setForecast] = useState<Forecast | null>(null);
   const [forecastState, setForecastState] = useState<ForecastState>("idle");
-  const [selectedIdx, setSelectedIdx] = useState(0);
+  /* Selected hour stored as a timestamp (null = "now") so the selection
+     stays on the same hour when the clock rolls over. */
+  const [selectedMs, setSelectedMs] = useState<number | null>(null);
   const [toast, setToast] = useState("");
 
   const showToast = useCallback((message: string) => {
@@ -548,8 +571,8 @@ export default function StarCounterTool() {
     setForecastState("loading");
     try {
       const url =
-        `https://api.open-meteo.com/v1/forecast?latitude=${p.lat}&longitude=${p.lon}` +
-        `&hourly=cloud_cover&forecast_days=3&timezone=auto&timeformat=unixtime`;
+        `${FORECAST_URL}?latitude=${p.lat}&longitude=${p.lon}` +
+        `&hourly=cloud_cover&forecast_days=3&timezone=auto&timeformat=unixtime${KEY_PARAM}`;
       const res = await fetch(url);
       if (!res.ok) throw new Error("bad response");
       const data = await res.json();
@@ -646,7 +669,7 @@ export default function StarCounterTool() {
       setSearching(true);
       setSearchError("");
       try {
-        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=en&format=json`;
+        const url = `${GEOCODE_URL}?name=${encodeURIComponent(q)}&count=5&language=en&format=json${KEY_PARAM}`;
         const res = await fetch(url, { signal: ctrl.signal });
         if (!res.ok) throw new Error("bad response");
         const data = await res.json();
@@ -698,7 +721,7 @@ export default function StarCounterTool() {
     setLocMsg("");
     setOpen(false);
     setAuto(true);
-    setSelectedIdx(0);
+    setSelectedMs(null);
     void loadForecast(p);
   };
 
@@ -712,6 +735,7 @@ export default function StarCounterTool() {
     setSuggestions([]);
     setSearchError("");
     setLocMsg("");
+    setSelectedMs(null);
   };
 
   const locateMe = () => {
@@ -748,16 +772,23 @@ export default function StarCounterTool() {
   const live = auto && !!place;
   const tz = place?.tz;
 
+  /* The forecast's hour boundaries sit at the location's local hours, which
+     are offset from UTC hours in zones like India (+5:30). Align to them. */
+  const hourOffset = useMemo(
+    () => (forecast && forecast.times.length ? ((forecast.times[0] % HOUR) + HOUR) % HOUR : 0),
+    [forecast]
+  );
+
   const cloudByHour = useMemo(() => {
     const map = new Map<number, number>();
     if (forecast) {
       forecast.times.forEach((t, i) => {
         const c = forecast.cloud[i];
-        if (Number.isFinite(c)) map.set(Math.floor(t / HOUR), c);
+        if (Number.isFinite(c)) map.set(Math.round((t - hourOffset) / HOUR), c);
       });
     }
     return map;
-  }, [forecast]);
+  }, [forecast, hourOffset]);
 
   const evaluate = useCallback(
     (ms: number): Evaluation => {
@@ -767,7 +798,7 @@ export default function StarCounterTool() {
       let moon: MoonInfo;
 
       if (live && place) {
-        const liveCloud = cloudByHour.get(Math.floor(ms / HOUR));
+        const liveCloud = cloudByHour.get(Math.floor((ms - hourOffset) / HOUR));
         if (liveCloud !== undefined) {
           cloud = liveCloud;
           cloudSource = "live";
@@ -791,16 +822,21 @@ export default function StarCounterTool() {
 
       return { ms, cloud, cloudSource, sunAlt, moon, est: estimate({ bortle, cloud, moonEffect: moon.effect, sunAlt }) };
     },
-    [live, place, cloudByHour, manualCloud, manualMoon, bortle]
+    [live, place, cloudByHour, hourOffset, manualCloud, manualMoon, bortle]
   );
 
   const hours = useMemo(() => {
     if (!live || now === 0) return [];
-    const start = Math.floor(now / HOUR) * HOUR;
+    const start = Math.floor((now - hourOffset) / HOUR) * HOUR + hourOffset;
     return Array.from({ length: 24 }, (_, i) => evaluate(i === 0 ? now : start + i * HOUR));
-  }, [live, now, evaluate]);
+  }, [live, now, evaluate, hourOffset]);
 
-  const safeIdx = hours.length ? Math.min(selectedIdx, hours.length - 1) : 0;
+  const safeIdx = useMemo(() => {
+    if (!hours.length || selectedMs === null) return 0;
+    const i = hours.findIndex((h) => h.ms === selectedMs);
+    return i < 0 ? 0 : i;
+  }, [hours, selectedMs]);
+
   const current: Evaluation = useMemo(
     () => (hours.length ? hours[safeIdx] : evaluate(now)),
     [hours, safeIdx, evaluate, now]
@@ -854,7 +890,7 @@ export default function StarCounterTool() {
     setSuggestions([]);
     setSearchError("");
     setLocMsg("");
-    setSelectedIdx(0);
+    setSelectedMs(null);
   };
 
   const buildReport = () => {
@@ -885,6 +921,10 @@ export default function StarCounterTool() {
     if (!moonToday) return;
     setManualMoon(Math.round((moonToday.illum * 100) / 5) * 5);
     showToast(`Set to today's ${moonToday.phase.toLowerCase()}`);
+  };
+
+  const selectHour = (i: number) => {
+    setSelectedMs(i === 0 ? null : hours[i]?.ms ?? null);
   };
 
   /* ---------- derived display ---------- */
@@ -1963,7 +2003,7 @@ export default function StarCounterTool() {
               subtitle="Tap an hour to see its estimate. Bars show the expected star count."
               action={
                 hours.length > 0 ? (
-                  <button type="button" className="sc-link" onClick={() => setSelectedIdx(bestIdx)}>
+                  <button type="button" className="sc-link" onClick={() => selectHour(bestIdx)}>
                     ★ Jump to best hour
                   </button>
                 ) : undefined
@@ -1986,7 +2026,7 @@ export default function StarCounterTool() {
                           data-sun={sun}
                           className={`sc-bar-btn ${i === safeIdx ? "sel" : ""}`}
                           title={`${label}: about ${h.est.stars.toLocaleString()} stars · ${Math.round(h.cloud)}% cloud`}
-                          onClick={() => setSelectedIdx(i)}
+                          onClick={() => selectHour(i)}
                         >
                           {h.moon.up && <span className="sc-moon-dot" />}
                           <span className="sc-bar" style={{ height: `${Math.max(2, (h.est.stars / maxStars) * 100)}%` }} />

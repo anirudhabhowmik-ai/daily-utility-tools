@@ -1,18 +1,15 @@
-
 import type { MetadataRoute } from "next";
 
 const BASE_URL = "https://toolsab.com";
 
 // Main website pages
-const mainPages = [
-  "/",
-  "/about",
-  "/contact",
-  "/privacy-policy",
-];
+const mainPages = ["/", "/about", "/contact", "/privacy-policy"];
 
 // All standalone tools from the homepage
 const standaloneTools = [
+  // Astronomy & Night Sky
+  "/tools/star-counter",
+
   // AI & Image Tools
   "/tools/ai-old-photo-restorer",
   "/tools/pencil-sketch",
@@ -88,10 +85,7 @@ const standaloneTools = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const allPages = [
-    ...mainPages,
-    ...standaloneTools,
-  ];
+  const allPages = [...mainPages, ...standaloneTools];
 
   // Remove duplicate paths.
   const uniquePages = [...new Set(allPages)];
@@ -99,11 +93,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return uniquePages.map((path) => ({
     url: `${BASE_URL}${path}`,
     changeFrequency: "monthly",
-    priority:
-      path === "/"
-        ? 1
-        : path.startsWith("/tools/")
-          ? 0.8
-          : 0.6,
+    priority: path === "/" ? 1 : path.startsWith("/tools/") ? 0.8 : 0.6,
   }));
 }
