@@ -21,6 +21,11 @@ const allTools: Tool[] = [
     category: "AI & Image Tools",
     href: "/tools/ai-old-photo-restorer",
   },
+  {
+    title: "Photo To Pencil Sketch",
+    category: "AI & Image Tools",
+    href: "/tools/pencil-sketch",
+  },
 
   // Text & Writing
   {

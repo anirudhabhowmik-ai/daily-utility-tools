@@ -15,6 +15,7 @@ const mainPages = [
 const standaloneTools = [
   // AI & Image Tools
   "/tools/ai-old-photo-restorer",
+  "/tools/pencil-sketch",
 
   // Text & Writing
   "/tools/fancy-text-generator",
