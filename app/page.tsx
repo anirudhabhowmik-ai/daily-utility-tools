@@ -21,101 +21,101 @@ const allTools: Tool[] = [
     category: "Astronomy & Night Sky",
     href: "/tools/star-counter",
   },
-  {
-    title: "Light Pollution Checker",
-    category: "Astronomy & Night Sky",
-    href: "/tools/light-pollution-checker",
-  },
-  {
-    title: "Stargazing Score Calculator",
-    category: "Astronomy & Night Sky",
-    href: "/tools/stargazing-score-calculator",
-  },
-  {
-    title: "Best Time to See Stars",
-    category: "Astronomy & Night Sky",
-    href: "/tools/best-time-to-see-stars",
-  },
-  {
-    title: "Star Visibility Forecast",
-    category: "Astronomy & Night Sky",
-    href: "/tools/star-visibility-forecast",
-  },
-  {
-    title: "Visible Planets Finder",
-    category: "Astronomy & Night Sky",
-    href: "/tools/visible-planets-finder",
-  },
-  {
-    title: "Constellation Finder",
-    category: "Astronomy & Night Sky",
-    href: "/tools/constellation-finder",
-  },
-  {
-    title: "Interactive Sky Map",
-    category: "Astronomy & Night Sky",
-    href: "/tools/interactive-sky-map",
-  },
-  {
-    title: "Moon Phase Calculator",
-    category: "Astronomy & Night Sky",
-    href: "/tools/moon-phase-calculator",
-  },
-  {
-    title: "Moonrise and Moonset Calculator",
-    category: "Astronomy & Night Sky",
-    href: "/tools/moonrise-moonset-calculator",
-  },
-  {
-    title: "Sunrise and Sunset Calculator",
-    category: "Astronomy & Night Sky",
-    href: "/tools/sunrise-sunset-calculator",
-  },
-  {
-    title: "Golden Hour Calculator",
-    category: "Astronomy & Night Sky",
-    href: "/tools/golden-hour-calculator",
-  },
-  {
-    title: "Blue Hour Calculator",
-    category: "Astronomy & Night Sky",
-    href: "/tools/blue-hour-calculator",
-  },
-  {
-    title: "Meteor Shower Calendar",
-    category: "Astronomy & Night Sky",
-    href: "/tools/meteor-shower-calendar",
-  },
-  {
-    title: "ISS Tracker",
-    category: "Astronomy & Night Sky",
-    href: "/tools/iss-tracker",
-  },
-  {
-    title: "Satellite Pass Predictor",
-    category: "Astronomy & Night Sky",
-    href: "/tools/satellite-pass-predictor",
-  },
-  {
-    title: "Solar and Lunar Eclipse Calculator",
-    category: "Astronomy & Night Sky",
-    href: "/tools/eclipse-calculator",
-  },
-  {
-    title: "Astronomy Distance Converter",
-    category: "Astronomy & Night Sky",
-    href: "/tools/astronomy-distance-converter",
-  },
-  {
-    title: "Telescope Magnification Calculator",
-    category: "Astronomy & Night Sky",
-    href: "/tools/telescope-magnification-calculator",
-  },
-  {
-    title: "Night Sky Calendar",
-    category: "Astronomy & Night Sky",
-    href: "/tools/night-sky-calendar",
-  },
+  // {
+  //   title: "Light Pollution Checker",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/light-pollution-checker",
+  // },
+  // {
+  //   title: "Stargazing Score Calculator",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/stargazing-score-calculator",
+  // },
+  // {
+  //   title: "Best Time to See Stars",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/best-time-to-see-stars",
+  // },
+  // {
+  //   title: "Star Visibility Forecast",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/star-visibility-forecast",
+  // },
+  // {
+  //   title: "Visible Planets Finder",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/visible-planets-finder",
+  // },
+  // {
+  //   title: "Constellation Finder",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/constellation-finder",
+  // },
+  // {
+  //   title: "Interactive Sky Map",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/interactive-sky-map",
+  // },
+  // {
+  //   title: "Moon Phase Calculator",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/moon-phase-calculator",
+  // },
+  // {
+  //   title: "Moonrise and Moonset Calculator",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/moonrise-moonset-calculator",
+  // },
+  // {
+  //   title: "Sunrise and Sunset Calculator",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/sunrise-sunset-calculator",
+  // },
+  // {
+  //   title: "Golden Hour Calculator",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/golden-hour-calculator",
+  // },
+  // {
+  //   title: "Blue Hour Calculator",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/blue-hour-calculator",
+  // },
+  // {
+  //   title: "Meteor Shower Calendar",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/meteor-shower-calendar",
+  // },
+  // {
+  //   title: "ISS Tracker",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/iss-tracker",
+  // },
+  // {
+  //   title: "Satellite Pass Predictor",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/satellite-pass-predictor",
+  // },
+  // {
+  //   title: "Solar and Lunar Eclipse Calculator",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/eclipse-calculator",
+  // },
+  // {
+  //   title: "Astronomy Distance Converter",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/astronomy-distance-converter",
+  // },
+  // {
+  //   title: "Telescope Magnification Calculator",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/telescope-magnification-calculator",
+  // },
+  // {
+  //   title: "Night Sky Calendar",
+  //   category: "Astronomy & Night Sky",
+  //   href: "/tools/night-sky-calendar",
+  // },
 
   // AI & Image Tools
   {
