@@ -104,6 +104,7 @@ const standaloneTools = [
 
   // Creators
   "/tools/photo-to-coloring-page-converter",
+  "/tools/photo-to-pixel-art-converter",
 
   // Business
   "/tools/freelancer-scope-guard",

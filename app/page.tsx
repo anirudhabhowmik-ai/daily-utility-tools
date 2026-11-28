@@ -16,6 +16,7 @@ type Tool = {
 
 
 const allTools: Tool[] = [
+
   // Text & Writing
   {
     title: "Fancy Text Generator",
@@ -77,6 +78,11 @@ const allTools: Tool[] = [
 
   // Creators
   { title: "Photo-to-Coloring-Page Converter", category: "Creators", href: "/tools/photo-to-coloring-page-converter" },
+  {
+    title: "Photo to Pixel Art Converter",
+    category: "Creators",
+    href: "/tools/photo-to-pixel-art-converter",
+  },
 
   // Business
   { title: "Freelancer Scope Guard", category: "Business", href: "/tools/freelancer-scope-guard" },
