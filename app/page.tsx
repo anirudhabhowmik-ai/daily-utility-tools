@@ -14,8 +14,13 @@ type Tool = {
   href: string;
 };
 
-
 const allTools: Tool[] = [
+  // AI & Image Tools
+  {
+    title: "AI Old Photo Restorer",
+    category: "AI & Image Tools",
+    href: "/tools/ai-old-photo-restorer",
+  },
 
   // Text & Writing
   {
@@ -25,60 +30,228 @@ const allTools: Tool[] = [
   },
 
   // Brain Games
-  { title: "Reaction Speed Test", category: "Brain Games", href: "/tools/reaction-speed-test" },
-  { title: "Number Memory Test", category: "Brain Games", href: "/tools/number-memory-test" },
-  { title: "Visual Memory Test", category: "Brain Games", href: "/tools/visual-memory-test" },
-  { title: "Sequence Memory Test", category: "Brain Games", href: "/tools/sequence-memory-test" },
-  { title: "Typing Speed Test", category: "Brain Games", href: "/tools/typing-speed-test" },
-  { title: "Word Memory Test", category: "Brain Games", href: "/tools/word-memory-test" },
-  { title: "Color Blindness Test", category: "Brain Games", href: "/tools/color-blindness-test" },
-  { title: "Focus and Concentration Test", category: "Brain Games", href: "/tools/focus-test" },
-  { title: "Mental Math Challenge", category: "Brain Games", href: "/tools/mental-math-challenge" },
+  {
+    title: "Reaction Speed Test",
+    category: "Brain Games",
+    href: "/tools/reaction-speed-test",
+  },
+  {
+    title: "Number Memory Test",
+    category: "Brain Games",
+    href: "/tools/number-memory-test",
+  },
+  {
+    title: "Visual Memory Test",
+    category: "Brain Games",
+    href: "/tools/visual-memory-test",
+  },
+  {
+    title: "Sequence Memory Test",
+    category: "Brain Games",
+    href: "/tools/sequence-memory-test",
+  },
+  {
+    title: "Typing Speed Test",
+    category: "Brain Games",
+    href: "/tools/typing-speed-test",
+  },
+  {
+    title: "Word Memory Test",
+    category: "Brain Games",
+    href: "/tools/word-memory-test",
+  },
+  {
+    title: "Color Blindness Test",
+    category: "Brain Games",
+    href: "/tools/color-blindness-test",
+  },
+  {
+    title: "Focus and Concentration Test",
+    category: "Brain Games",
+    href: "/tools/focus-test",
+  },
+  {
+    title: "Mental Math Challenge",
+    category: "Brain Games",
+    href: "/tools/mental-math-challenge",
+  },
 
   // Student Productivity
-  { title: "Study Stopwatch & Tracker", category: "Student Productivity", href: "/tools/study-stopwatch" },
-  { title: "Pomodoro Study Timer", category: "Student Productivity", href: "/tools/pomodoro-study-timer" },
-  { title: "Smart Study Planner", category: "Student Productivity", href: "/tools/smart-study-planner" },
-  { title: "Exam Countdown Tracker", category: "Student Productivity", href: "/tools/exam-countdown-tracker" },
-  { title: "Study Habit Tracker", category: "Student Productivity", href: "/tools/study-habit-tracker" },
-  { title: "Flashcard Maker", category: "Student Productivity", href: "/tools/flashcard-maker" },
-  { title: "Spaced Repetition Planner", category: "Student Productivity", href: "/tools/spaced-repetition-planner" },
-  { title: "Custom Quiz Maker", category: "Student Productivity", href: "/tools/custom-quiz-maker" },
-  { title: "Syllabus Progress Tracker", category: "Student Productivity", href: "/tools/syllabus-progress-tracker" },
-  { title: "Vocabulary Builder", category: "Student Productivity", href: "/tools/vocabulary-builder" },
-  { title: "Cornell Notes Generator", category: "Student Productivity", href: "/tools/cornell-notes-generator" },
-  { title: "Mind Map Maker", category: "Student Productivity", href: "/tools/mind-map-maker" },
-  { title: "Printable Notebook Generator", category: "Student Productivity", href: "/tools/printable-notebook-generator" },
-  { title: "Essay Outline Builder", category: "Student Productivity", href: "/tools/essay-outline-builder" },
-  { title: "Reading Progress Tracker", category: "Student Productivity", href: "/tools/reading-progress-tracker" },
-  { title: "Random Study Topic Picker", category: "Student Productivity", href: "/tools/random-study-topic-picker" },
-  { title: "Study Break Reminder", category: "Student Productivity", href: "/tools/study-break-reminder" },
-  { title: "Lecture Note Organizer", category: "Student Productivity", href: "/tools/lecture-note-organizer" },
-  { title: "Distraction Log Tracker", category: "Student Productivity", href: "/tools/distraction-log-tracker" },
-  { title: "Study Group Session Planner", category: "Student Productivity", href: "/tools/study-group-session-planner" },
+  {
+    title: "Study Stopwatch & Tracker",
+    category: "Student Productivity",
+    href: "/tools/study-stopwatch",
+  },
+  {
+    title: "Pomodoro Study Timer",
+    category: "Student Productivity",
+    href: "/tools/pomodoro-study-timer",
+  },
+  {
+    title: "Smart Study Planner",
+    category: "Student Productivity",
+    href: "/tools/smart-study-planner",
+  },
+  {
+    title: "Exam Countdown Tracker",
+    category: "Student Productivity",
+    href: "/tools/exam-countdown-tracker",
+  },
+  {
+    title: "Study Habit Tracker",
+    category: "Student Productivity",
+    href: "/tools/study-habit-tracker",
+  },
+  {
+    title: "Flashcard Maker",
+    category: "Student Productivity",
+    href: "/tools/flashcard-maker",
+  },
+  {
+    title: "Spaced Repetition Planner",
+    category: "Student Productivity",
+    href: "/tools/spaced-repetition-planner",
+  },
+  {
+    title: "Custom Quiz Maker",
+    category: "Student Productivity",
+    href: "/tools/custom-quiz-maker",
+  },
+  {
+    title: "Syllabus Progress Tracker",
+    category: "Student Productivity",
+    href: "/tools/syllabus-progress-tracker",
+  },
+  {
+    title: "Vocabulary Builder",
+    category: "Student Productivity",
+    href: "/tools/vocabulary-builder",
+  },
+  {
+    title: "Cornell Notes Generator",
+    category: "Student Productivity",
+    href: "/tools/cornell-notes-generator",
+  },
+  {
+    title: "Mind Map Maker",
+    category: "Student Productivity",
+    href: "/tools/mind-map-maker",
+  },
+  {
+    title: "Printable Notebook Generator",
+    category: "Student Productivity",
+    href: "/tools/printable-notebook-generator",
+  },
+  {
+    title: "Essay Outline Builder",
+    category: "Student Productivity",
+    href: "/tools/essay-outline-builder",
+  },
+  {
+    title: "Reading Progress Tracker",
+    category: "Student Productivity",
+    href: "/tools/reading-progress-tracker",
+  },
+  {
+    title: "Random Study Topic Picker",
+    category: "Student Productivity",
+    href: "/tools/random-study-topic-picker",
+  },
+  {
+    title: "Study Break Reminder",
+    category: "Student Productivity",
+    href: "/tools/study-break-reminder",
+  },
+  {
+    title: "Lecture Note Organizer",
+    category: "Student Productivity",
+    href: "/tools/lecture-note-organizer",
+  },
+  {
+    title: "Distraction Log Tracker",
+    category: "Student Productivity",
+    href: "/tools/distraction-log-tracker",
+  },
+  {
+    title: "Study Group Session Planner",
+    category: "Student Productivity",
+    href: "/tools/study-group-session-planner",
+  },
 
   // Digital Planning
-  { title: "Digital Stamp Generator", category: "Digital Planning", href: "/tools/stamp-generator" },
-  { title: "Calligraphy Practice Sheet Generator", category: "Digital Planning", href: "/tools/calligraphy-practice-sheet-generator" },
+  {
+    title: "Digital Stamp Generator",
+    category: "Digital Planning",
+    href: "/tools/stamp-generator",
+  },
+  {
+    title: "Calligraphy Practice Sheet Generator",
+    category: "Digital Planning",
+    href: "/tools/calligraphy-practice-sheet-generator",
+  },
 
   // Home Improvement
-  { title: "Board & Batten Calculator", category: "Home Improvement", href: "/tools/board-and-batten" },
-  { title: "French Drain Gravel Calculator", category: "Home Improvement", href: "/tools/french-drain-gravel-calculator" },
-  { title: "Epoxy Floor Coating Calculator", category: "Home Improvement", href: "/tools/epoxy-floor-coating-calculator" },
-  { title: "Stair Carpet Calculator", category: "Home Improvement", href: "/tools/stair-carpet-calculator" },
-  { title: "Pattern-Aware Tile Calculator", category: "Home Improvement", href: "/tools/pattern-aware-tile-calculator" },
+  {
+    title: "Board & Batten Calculator",
+    category: "Home Improvement",
+    href: "/tools/board-and-batten",
+  },
+  {
+    title: "French Drain Gravel Calculator",
+    category: "Home Improvement",
+    href: "/tools/french-drain-gravel-calculator",
+  },
+  {
+    title: "Epoxy Floor Coating Calculator",
+    category: "Home Improvement",
+    href: "/tools/epoxy-floor-coating-calculator",
+  },
+  {
+    title: "Stair Carpet Calculator",
+    category: "Home Improvement",
+    href: "/tools/stair-carpet-calculator",
+  },
+  {
+    title: "Pattern-Aware Tile Calculator",
+    category: "Home Improvement",
+    href: "/tools/pattern-aware-tile-calculator",
+  },
 
   // Privacy Tools
-  { title: "Offline Image Redactor", category: "Privacy Tools", href: "/tools/offline-image-redactor" },
-  { title: "Local-Only Password Generator", category: "Privacy Tools", href: "/tools/local-only-password-generator" },
+  {
+    title: "Offline Image Redactor",
+    category: "Privacy Tools",
+    href: "/tools/offline-image-redactor",
+  },
+  {
+    title: "Local-Only Password Generator",
+    category: "Privacy Tools",
+    href: "/tools/local-only-password-generator",
+  },
 
   // Developer Tools
-  { title: "JWT Decoder", category: "Developer Tools", href: "/tools/jwt-decoder" },
-  { title: "LLM Token Cost Calculator", category: "Developer Tools", href: "/tools/llm-token-cost-calculator" },
-  { title: "Favicon Generator", category: "Developer Tools", href: "/tools/favicon-generator" },
+  {
+    title: "JWT Decoder",
+    category: "Developer Tools",
+    href: "/tools/jwt-decoder",
+  },
+  {
+    title: "LLM Token Cost Calculator",
+    category: "Developer Tools",
+    href: "/tools/llm-token-cost-calculator",
+  },
+  {
+    title: "Favicon Generator",
+    category: "Developer Tools",
+    href: "/tools/favicon-generator",
+  },
 
   // Creators
-  { title: "Photo-to-Coloring-Page Converter", category: "Creators", href: "/tools/photo-to-coloring-page-converter" },
+  {
+    title: "Photo-to-Coloring-Page Converter",
+    category: "Creators",
+    href: "/tools/photo-to-coloring-page-converter",
+  },
   {
     title: "Photo to Pixel Art Converter",
     category: "Creators",
@@ -86,26 +259,34 @@ const allTools: Tool[] = [
   },
 
   // Business
-  { title: "Freelancer Scope Guard", category: "Business", href: "/tools/freelancer-scope-guard" },
+  {
+    title: "Freelancer Scope Guard",
+    category: "Business",
+    href: "/tools/freelancer-scope-guard",
+  },
 
   // Woodworking
-  { title: "Board Feet Calculator", category: "Woodworking", href: "/tools/board-feet-calculator" },
+  {
+    title: "Board Feet Calculator",
+    category: "Woodworking",
+    href: "/tools/board-feet-calculator",
+  },
 
   // Pets
-  { title: "Exotic Pet Feeding Tracker", category: "Pets", href: "/tools/exotic-pet-nutrition-calculator" },
+  {
+    title: "Exotic Pet Feeding Tracker",
+    category: "Pets",
+    href: "/tools/exotic-pet-nutrition-calculator",
+  },
 ];
 
-
-const groupedTools = allTools.reduce<Record<string, Tool[]>>(
-  (groups, tool) => {
-    if (!groups[tool.category]) {
-      groups[tool.category] = [];
-    }
-    groups[tool.category].push(tool);
-    return groups;
-  },
-  {}
-);
+const groupedTools = allTools.reduce<Record<string, Tool[]>>((groups, tool) => {
+  if (!groups[tool.category]) {
+    groups[tool.category] = [];
+  }
+  groups[tool.category].push(tool);
+  return groups;
+}, {});
 
 export default function Home() {
   return (
